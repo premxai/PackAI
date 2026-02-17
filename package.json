@@ -1,6 +1,6 @@
 {
-  "name": "webflow-ai-orchestrator",
-  "displayName": "WebFlow AI Orchestrator",
+  "name": "packai",
+  "displayName": "PackAI",
   "description": "Coordinate Claude, Copilot, and Codex agents to build web projects together. Describe your project, get an intelligent execution plan, and let three AI agents collaborate — each assigned to the tasks they do best.",
   "version": "0.1.0",
   "publisher": "premxai",
