@@ -1,0 +1,37 @@
+# Source code (bundled into dist/)
+src/**
+out/**
+
+# Config and tooling
+.vscode/**
+.vscode-test/**
+.github/**
+tsconfig.json
+esbuild.mjs
+vitest.config.ts
+.eslintrc*
+eslint.config.*
+
+# Dev artifacts
+node_modules/**
+**/*.map
+**/*.test.ts
+**/*.test.js
+coverage/**
+
+# Git
+.git/**
+.gitignore
+
+# Docs (keep README and CHANGELOG, exclude dev docs)
+docs/contributing.md
+docs/api-reference.md
+docs/demo-script.md
+
+# Examples (users can find these on GitHub)
+examples/**
+
+# Misc
+*.vsix
+.claude/**
+FEASIBILITY_REPORT.md

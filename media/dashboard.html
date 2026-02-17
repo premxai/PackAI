@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'none'; style-src {{cspSource}} 'nonce-{{nonce}}'; script-src 'nonce-{{nonce}}';">
+  <link rel="stylesheet" href="{{cssUri}}">
+  <title>WebFlow Dashboard</title>
+</head>
+<body>
+  <!-- Header -->
+  <header class="dashboard-header">
+    <h1>WebFlow Dashboard</h1>
+    <div class="header-stats" id="header-stats">
+      <span class="stat" id="stat-elapsed">0:00</span>
+      <span class="stat" id="stat-remaining">~0 min left</span>
+    </div>
+  </header>
+
+  <!-- Overall Progress -->
+  <section class="progress-section">
+    <div class="progress-bar-container">
+      <div class="progress-bar" id="overall-progress" style="width: 0%"></div>
+    </div>
+    <div class="progress-label" id="progress-label">0 / 0 tasks</div>
+  </section>
+
+  <!-- Agent Cards -->
+  <section class="agents-section">
+    <h2>Agents</h2>
+    <div class="agent-cards" id="agent-cards">
+      <div class="agent-card agent-claude" id="agent-claude" data-role="claude">
+        <div class="agent-name">Claude</div>
+        <div class="agent-status" id="agent-claude-status">idle</div>
+        <div class="agent-task" id="agent-claude-task"></div>
+        <div class="agent-stats">
+          <span class="completed" id="agent-claude-completed">0</span> done
+          <span class="failed" id="agent-claude-failed">0</span> failed
+        </div>
+      </div>
+      <div class="agent-card agent-copilot" id="agent-copilot" data-role="copilot">
+        <div class="agent-name">Copilot</div>
+        <div class="agent-status" id="agent-copilot-status">idle</div>
+        <div class="agent-task" id="agent-copilot-task"></div>
+        <div class="agent-stats">
+          <span class="completed" id="agent-copilot-completed">0</span> done
+          <span class="failed" id="agent-copilot-failed">0</span> failed
+        </div>
+      </div>
+      <div class="agent-card agent-codex" id="agent-codex" data-role="codex">
+        <div class="agent-name">Codex</div>
+        <div class="agent-status" id="agent-codex-status">idle</div>
+        <div class="agent-task" id="agent-codex-task"></div>
+        <div class="agent-stats">
+          <span class="completed" id="agent-codex-completed">0</span> done
+          <span class="failed" id="agent-codex-failed">0</span> failed
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Phases & Tasks -->
+  <section class="phases-section">
+    <h2>Phases &amp; Tasks</h2>
+    <div id="phases-container"></div>
+    <div class="empty-state" id="phases-empty">No execution plan loaded</div>
+  </section>
+
+  <!-- Conflicts -->
+  <section class="conflicts-section" id="conflicts-section" style="display: none;">
+    <h2>
+      <span class="warning-icon">&#9888;</span>
+      Conflicts (<span id="conflict-count">0</span>)
+    </h2>
+    <div id="conflicts-container"></div>
+  </section>
+
+  <!-- Activity Log -->
+  <section class="activity-section">
+    <h2>Activity Log</h2>
+    <div class="activity-log" id="activity-log">
+      <div class="empty-state" id="activity-empty">Waiting for activity...</div>
+    </div>
+  </section>
+
+  <script nonce="{{nonce}}" src="{{jsUri}}"></script>
+</body>
+</html>

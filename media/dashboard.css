@@ -1,0 +1,426 @@
+/* ===========================================================================
+   WebFlow Dashboard — Theme-aware styles
+   Uses VS Code CSS custom properties for dark/light mode support.
+   =========================================================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--vscode-font-family, sans-serif);
+  font-size: var(--vscode-font-size, 13px);
+  color: var(--vscode-foreground);
+  background: var(--vscode-editor-background);
+  padding: 0 12px 12px;
+  line-height: 1.5;
+}
+
+h1 {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+h2 {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--vscode-descriptionForeground);
+  margin-bottom: 8px;
+}
+
+section {
+  margin-bottom: 16px;
+}
+
+/* ---------------------------------------------------------------------------
+   Header
+   --------------------------------------------------------------------------- */
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--vscode-panel-border, rgba(128,128,128,0.2));
+  margin-bottom: 12px;
+  position: sticky;
+  top: 0;
+  background: var(--vscode-editor-background);
+  z-index: 10;
+}
+
+.header-stats {
+  display: flex;
+  gap: 12px;
+}
+
+.stat {
+  font-size: 11px;
+  color: var(--vscode-descriptionForeground);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------------------------------------------------------------------------
+   Overall Progress Bar
+   --------------------------------------------------------------------------- */
+
+.progress-section {
+  margin-bottom: 14px;
+}
+
+.progress-bar-container {
+  height: 6px;
+  background: var(--vscode-progressBar-background, rgba(128,128,128,0.2));
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--vscode-progressBar-background, #0078d4);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+  min-width: 0;
+}
+
+.progress-label {
+  font-size: 11px;
+  color: var(--vscode-descriptionForeground);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------------------------------------------------------------------------
+   Agent Cards
+   --------------------------------------------------------------------------- */
+
+.agent-cards {
+  display: flex;
+  gap: 8px;
+}
+
+.agent-card {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--vscode-panel-border, rgba(128,128,128,0.2));
+  background: var(--vscode-editor-background);
+  transition: border-color 0.2s;
+}
+
+.agent-card[data-status="busy"] {
+  border-color: var(--vscode-progressBar-background, #0078d4);
+}
+
+.agent-card[data-status="error"] {
+  border-color: var(--vscode-errorForeground, #f44747);
+}
+
+/* Agent accent colors */
+.agent-claude { border-left: 3px solid #a855f7; }
+.agent-copilot { border-left: 3px solid #3b82f6; }
+.agent-codex { border-left: 3px solid #22c55e; }
+
+.agent-name {
+  font-weight: 600;
+  font-size: 12px;
+  margin-bottom: 2px;
+}
+
+.agent-status {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--vscode-descriptionForeground);
+  margin-bottom: 4px;
+}
+
+.agent-status.busy {
+  color: var(--vscode-progressBar-background, #0078d4);
+}
+
+.agent-status.error {
+  color: var(--vscode-errorForeground, #f44747);
+}
+
+.agent-task {
+  font-size: 11px;
+  color: var(--vscode-descriptionForeground);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 16px;
+}
+
+.agent-stats {
+  font-size: 10px;
+  color: var(--vscode-descriptionForeground);
+  margin-top: 4px;
+}
+
+.agent-stats .completed {
+  color: var(--vscode-testing-iconPassed, #22c55e);
+  font-weight: 600;
+}
+
+.agent-stats .failed {
+  color: var(--vscode-errorForeground, #f44747);
+  font-weight: 600;
+  margin-left: 6px;
+}
+
+/* ---------------------------------------------------------------------------
+   Phases & Tasks
+   --------------------------------------------------------------------------- */
+
+.phase {
+  margin-bottom: 8px;
+  border: 1px solid var(--vscode-panel-border, rgba(128,128,128,0.2));
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.phase-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  background: var(--vscode-sideBar-background, rgba(128,128,128,0.05));
+  user-select: none;
+}
+
+.phase-header:hover {
+  background: var(--vscode-list-hoverBackground, rgba(128,128,128,0.1));
+}
+
+.phase-chevron {
+  font-size: 10px;
+  transition: transform 0.15s;
+  width: 12px;
+  text-align: center;
+}
+
+.phase-chevron.collapsed {
+  transform: rotate(-90deg);
+}
+
+.phase-label {
+  font-weight: 600;
+  font-size: 12px;
+  flex: 1;
+}
+
+.phase-status {
+  font-size: 10px;
+  text-transform: uppercase;
+  padding: 1px 6px;
+  border-radius: 3px;
+  letter-spacing: 0.3px;
+}
+
+.phase-status.running { background: rgba(0,120,212,0.15); color: var(--vscode-progressBar-background, #0078d4); }
+.phase-status.completed { background: rgba(34,197,94,0.15); color: #22c55e; }
+.phase-status.failed { background: rgba(244,71,71,0.15); color: #f44747; }
+.phase-status.pending { background: rgba(128,128,128,0.1); color: var(--vscode-descriptionForeground); }
+
+.phase-tasks {
+  padding: 4px 0;
+}
+
+.phase-tasks.hidden {
+  display: none;
+}
+
+.task-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 10px 3px 28px;
+  font-size: 12px;
+}
+
+.task-row:hover {
+  background: var(--vscode-list-hoverBackground, rgba(128,128,128,0.05));
+}
+
+.task-icon {
+  width: 14px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.task-icon.pending { color: var(--vscode-descriptionForeground); }
+.task-icon.running { color: var(--vscode-progressBar-background, #0078d4); }
+.task-icon.completed { color: var(--vscode-testing-iconPassed, #22c55e); }
+.task-icon.failed { color: var(--vscode-errorForeground, #f44747); }
+.task-icon.skipped { color: var(--vscode-descriptionForeground); }
+
+.task-label {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.task-agent {
+  font-size: 10px;
+  padding: 0 4px;
+  border-radius: 2px;
+  background: rgba(128,128,128,0.1);
+  color: var(--vscode-descriptionForeground);
+  flex-shrink: 0;
+}
+
+.task-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.task-actions button {
+  background: none;
+  border: none;
+  color: var(--vscode-descriptionForeground);
+  cursor: pointer;
+  font-size: 11px;
+  padding: 0 3px;
+  border-radius: 2px;
+}
+
+.task-actions button:hover {
+  background: var(--vscode-toolbar-hoverBackground, rgba(128,128,128,0.2));
+  color: var(--vscode-foreground);
+}
+
+/* ---------------------------------------------------------------------------
+   Conflicts
+   --------------------------------------------------------------------------- */
+
+.warning-icon {
+  color: var(--vscode-editorWarning-foreground, #cca700);
+}
+
+.conflict-card {
+  border: 1px solid var(--vscode-panel-border, rgba(128,128,128,0.2));
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 8px;
+}
+
+.conflict-card.severity-high { border-left: 3px solid var(--vscode-errorForeground, #f44747); }
+.conflict-card.severity-medium { border-left: 3px solid var(--vscode-editorWarning-foreground, #cca700); }
+.conflict-card.severity-low { border-left: 3px solid var(--vscode-descriptionForeground); }
+
+.conflict-type {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: var(--vscode-descriptionForeground);
+  margin-bottom: 4px;
+}
+
+.conflict-description {
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.conflict-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.conflict-btn {
+  font-size: 11px;
+  padding: 3px 10px;
+  border: 1px solid var(--vscode-button-border, rgba(128,128,128,0.3));
+  border-radius: 3px;
+  background: var(--vscode-button-secondaryBackground, rgba(128,128,128,0.1));
+  color: var(--vscode-button-secondaryForeground, var(--vscode-foreground));
+  cursor: pointer;
+}
+
+.conflict-btn:hover {
+  background: var(--vscode-button-secondaryHoverBackground, rgba(128,128,128,0.2));
+}
+
+.conflict-btn.primary {
+  background: var(--vscode-button-background, #0078d4);
+  color: var(--vscode-button-foreground, #fff);
+  border-color: transparent;
+}
+
+.conflict-btn.primary:hover {
+  background: var(--vscode-button-hoverBackground, #005a9e);
+}
+
+/* ---------------------------------------------------------------------------
+   Activity Log
+   --------------------------------------------------------------------------- */
+
+.activity-log {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid var(--vscode-panel-border, rgba(128,128,128,0.2));
+  border-radius: 4px;
+  padding: 4px 0;
+  font-size: 11px;
+  font-family: var(--vscode-editor-font-family, monospace);
+}
+
+.activity-entry {
+  padding: 2px 8px;
+  display: flex;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.activity-entry:hover {
+  background: var(--vscode-list-hoverBackground, rgba(128,128,128,0.05));
+}
+
+.activity-time {
+  color: var(--vscode-descriptionForeground);
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.activity-agent {
+  font-weight: 600;
+  flex-shrink: 0;
+  min-width: 52px;
+}
+
+.activity-agent.claude { color: #a855f7; }
+.activity-agent.copilot { color: #3b82f6; }
+.activity-agent.codex { color: #22c55e; }
+.activity-agent.system { color: var(--vscode-descriptionForeground); }
+
+.activity-message {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.activity-entry.level-success .activity-message { color: var(--vscode-testing-iconPassed, #22c55e); }
+.activity-entry.level-warning .activity-message { color: var(--vscode-editorWarning-foreground, #cca700); }
+.activity-entry.level-error .activity-message { color: var(--vscode-errorForeground, #f44747); }
+
+/* ---------------------------------------------------------------------------
+   Empty states
+   --------------------------------------------------------------------------- */
+
+.empty-state {
+  color: var(--vscode-descriptionForeground);
+  font-style: italic;
+  text-align: center;
+  padding: 16px;
+  font-size: 12px;
+}

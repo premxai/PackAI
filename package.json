@@ -1,0 +1,478 @@
+{
+  "name": "webflow-ai-orchestrator",
+  "displayName": "WebFlow AI Orchestrator",
+  "description": "Coordinate Claude, Copilot, and Codex agents to build web projects together. Describe your project, get an intelligent execution plan, and let three AI agents collaborate — each assigned to the tasks they do best.",
+  "version": "0.1.0",
+  "publisher": "webflow-ai",
+  "license": "MIT",
+  "icon": "media/icon.png",
+  "galleryBanner": {
+    "color": "#1e1e2e",
+    "theme": "dark"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anthropics/webflow-ai-orchestrator"
+  },
+  "bugs": {
+    "url": "https://github.com/anthropics/webflow-ai-orchestrator/issues"
+  },
+  "homepage": "https://github.com/anthropics/webflow-ai-orchestrator#readme",
+  "engines": {
+    "vscode": "^1.109.0"
+  },
+  "categories": [
+    "AI",
+    "Chat",
+    "Programming Languages",
+    "Machine Learning"
+  ],
+  "keywords": [
+    "ai",
+    "agent",
+    "orchestrator",
+    "claude",
+    "copilot",
+    "codex",
+    "web development",
+    "multi-agent",
+    "scaffolding",
+    "code generation",
+    "workflow",
+    "automation"
+  ],
+  "activationEvents": [],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "webflow.startProject",
+        "title": "Start Project",
+        "category": "WebFlow",
+        "icon": "$(rocket)"
+      },
+      {
+        "command": "webflow.openDashboard",
+        "title": "Open Dashboard",
+        "category": "WebFlow",
+        "icon": "$(dashboard)"
+      },
+      {
+        "command": "webflow.openSettings",
+        "title": "Open Settings",
+        "category": "WebFlow",
+        "icon": "$(gear)"
+      },
+      {
+        "command": "webflow.pauseOrchestration",
+        "title": "Pause Orchestration",
+        "category": "WebFlow",
+        "icon": "$(debug-pause)",
+        "enablement": "webflow.hasActiveSessions"
+      },
+      {
+        "command": "webflow.resumeOrchestration",
+        "title": "Resume Orchestration",
+        "category": "WebFlow",
+        "icon": "$(debug-continue)",
+        "enablement": "webflow.hasActiveSessions"
+      },
+      {
+        "command": "webflow.cancelOrchestration",
+        "title": "Cancel Orchestration",
+        "category": "WebFlow",
+        "icon": "$(stop-circle)",
+        "enablement": "webflow.hasActiveSessions"
+      },
+      {
+        "command": "webflow.viewSessionDetails",
+        "title": "View Session Details",
+        "category": "WebFlow",
+        "icon": "$(list-unordered)"
+      },
+      {
+        "command": "webflow.retryTask",
+        "title": "Retry Task",
+        "category": "WebFlow",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "webflow.resolveConflict",
+        "title": "Resolve Conflict",
+        "category": "WebFlow",
+        "icon": "$(git-merge)"
+      },
+      {
+        "command": "webflow.browseTemplates",
+        "title": "Browse Templates",
+        "category": "WebFlow",
+        "icon": "$(file-code)"
+      },
+      {
+        "command": "webflow.createTemplate",
+        "title": "Create Template from Plan",
+        "category": "WebFlow",
+        "icon": "$(add)"
+      },
+      {
+        "command": "webflow.importTemplate",
+        "title": "Import Template",
+        "category": "WebFlow",
+        "icon": "$(cloud-download)"
+      },
+      {
+        "command": "webflow.exportTemplate",
+        "title": "Export Template",
+        "category": "WebFlow",
+        "icon": "$(cloud-upload)"
+      },
+      {
+        "command": "webflow.configureAgents",
+        "title": "Configure Agent Preferences",
+        "category": "WebFlow",
+        "icon": "$(settings-gear)"
+      },
+      {
+        "command": "webflow.configureApproval",
+        "title": "Configure Approval Rules",
+        "category": "WebFlow",
+        "icon": "$(shield)"
+      },
+      {
+        "command": "webflow.resetSettings",
+        "title": "Reset Settings to Defaults",
+        "category": "WebFlow",
+        "icon": "$(discard)"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "webflow.startProject",
+        "key": "ctrl+shift+w s",
+        "mac": "cmd+shift+w s"
+      },
+      {
+        "command": "webflow.openDashboard",
+        "key": "ctrl+shift+w d",
+        "mac": "cmd+shift+w d"
+      },
+      {
+        "command": "webflow.pauseOrchestration",
+        "key": "ctrl+shift+w p",
+        "mac": "cmd+shift+w p"
+      },
+      {
+        "command": "webflow.resumeOrchestration",
+        "key": "ctrl+shift+w r",
+        "mac": "cmd+shift+w r"
+      },
+      {
+        "command": "webflow.browseTemplates",
+        "key": "ctrl+shift+w t",
+        "mac": "cmd+shift+w t"
+      }
+    ],
+    "viewsContainers": {
+      "panel": [
+        {
+          "id": "webflow-dashboard",
+          "title": "WebFlow",
+          "icon": "$(rocket)"
+        }
+      ]
+    },
+    "views": {
+      "webflow-dashboard": [
+        {
+          "id": "webflow.dashboardView",
+          "name": "Dashboard",
+          "type": "webview"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "WebFlow AI Orchestrator",
+      "properties": {
+        "webflow.agentPreferences.selectionStrategy": {
+          "type": "string",
+          "default": "intelligent",
+          "enum": [
+            "intelligent",
+            "roundRobin",
+            "preferClaude",
+            "preferCopilot",
+            "preferCodex"
+          ],
+          "enumDescriptions": [
+            "Automatically select the best agent based on task analysis and benchmarks",
+            "Distribute tasks evenly across available agents",
+            "Prefer Claude for all tasks (fallback to others if unavailable)",
+            "Prefer Copilot for all tasks (fallback to others if unavailable)",
+            "Prefer Codex for all tasks (fallback to others if unavailable)"
+          ],
+          "description": "How the orchestrator selects agents when multiple could handle a task."
+        },
+        "webflow.agentPreferences.costOptimizationLevel": {
+          "type": "string",
+          "default": "balanced",
+          "enum": [
+            "economy",
+            "balanced",
+            "performance"
+          ],
+          "enumDescriptions": [
+            "Minimize cost by preferring cheaper models and fewer API calls",
+            "Balance cost and quality for most workflows",
+            "Maximize quality by using the most capable models available"
+          ],
+          "description": "Cost-vs-quality tradeoff for model selection."
+        },
+        "webflow.agentPreferences.maxParallelSessions": {
+          "type": "integer",
+          "default": 3,
+          "minimum": 1,
+          "maximum": 10,
+          "description": "Maximum number of parallel agent sessions allowed."
+        },
+        "webflow.approval.autoApproveTools": {
+          "type": "array",
+          "default": [
+            "READ",
+            "WEB_SEARCH"
+          ],
+          "items": {
+            "type": "string",
+            "enum": [
+              "READ",
+              "CREATE",
+              "EDIT",
+              "DELETE",
+              "TERMINAL",
+              "WEB_SEARCH"
+            ]
+          },
+          "description": "Tool types to always auto-approve without prompting."
+        },
+        "webflow.approval.alwaysDenyTools": {
+          "type": "array",
+          "default": [
+            "DELETE"
+          ],
+          "items": {
+            "type": "string",
+            "enum": [
+              "READ",
+              "CREATE",
+              "EDIT",
+              "DELETE",
+              "TERMINAL",
+              "WEB_SEARCH"
+            ]
+          },
+          "description": "Tool types to always require manual confirmation."
+        },
+        "webflow.approval.agentTrustLevels": {
+          "type": "object",
+          "default": {
+            "claude": "standard",
+            "copilot": "standard",
+            "codex": "standard"
+          },
+          "properties": {
+            "claude": {
+              "type": "string",
+              "enum": [
+                "minimal",
+                "standard",
+                "elevated",
+                "full"
+              ],
+              "default": "standard"
+            },
+            "copilot": {
+              "type": "string",
+              "enum": [
+                "minimal",
+                "standard",
+                "elevated",
+                "full"
+              ],
+              "default": "standard"
+            },
+            "codex": {
+              "type": "string",
+              "enum": [
+                "minimal",
+                "standard",
+                "elevated",
+                "full"
+              ],
+              "default": "standard"
+            }
+          },
+          "description": "Per-agent trust level. Higher trust means fewer approval interruptions."
+        },
+        "webflow.approval.devContainerMode": {
+          "type": "boolean",
+          "default": true,
+          "description": "Activate permissive approval mode when running in a dev container."
+        },
+        "webflow.approval.productionWorkspace": {
+          "type": "boolean",
+          "default": false,
+          "description": "Mark workspace as production to activate restrictive approval mode."
+        },
+        "webflow.ui.autoOpenDashboard": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically open the dashboard when a workflow starts."
+        },
+        "webflow.ui.notificationVerbosity": {
+          "type": "string",
+          "default": "normal",
+          "enum": [
+            "silent",
+            "minimal",
+            "normal",
+            "verbose"
+          ],
+          "enumDescriptions": [
+            "No notifications (errors only in output channel)",
+            "Only errors and important warnings",
+            "Standard notifications for task completion and warnings",
+            "Detailed notifications for every agent action"
+          ],
+          "description": "How chatty the extension is with VS Code notifications."
+        },
+        "webflow.ui.dashboardTheme": {
+          "type": "string",
+          "default": "auto",
+          "enum": [
+            "auto",
+            "light",
+            "dark"
+          ],
+          "enumDescriptions": [
+            "Follow VS Code's current theme",
+            "Always use light theme for the dashboard",
+            "Always use dark theme for the dashboard"
+          ],
+          "description": "Dashboard color theme override."
+        },
+        "webflow.ui.activityLogLimit": {
+          "type": "integer",
+          "default": 100,
+          "minimum": 10,
+          "maximum": 500,
+          "description": "Maximum number of activity log entries displayed in the dashboard."
+        },
+        "webflow.advanced.customTemplatesDirectory": {
+          "type": "string",
+          "default": "",
+          "description": "Path to a directory containing custom workflow templates. Leave empty to use built-in templates."
+        },
+        "webflow.advanced.benchmarkDataPath": {
+          "type": "string",
+          "default": "",
+          "description": "Path to benchmark data JSON file. Leave empty for default (.webflow/benchmarks.json)."
+        },
+        "webflow.advanced.sessionTimeoutMs": {
+          "type": "integer",
+          "default": 300000,
+          "minimum": 0,
+          "maximum": 3600000,
+          "description": "Session timeout in milliseconds. Set to 0 for no timeout."
+        },
+        "webflow.advanced.maxRetries": {
+          "type": "integer",
+          "default": 3,
+          "minimum": 0,
+          "maximum": 10,
+          "description": "Maximum retry attempts when an agent session fails."
+        },
+        "webflow.advanced.retryBaseDelayMs": {
+          "type": "integer",
+          "default": 1000,
+          "minimum": 100,
+          "maximum": 60000,
+          "description": "Base delay in milliseconds between retry attempts (with exponential backoff)."
+        },
+        "webflow.advanced.telemetryEnabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable opt-in telemetry to track error types and frequency locally. No code is sent externally."
+        },
+        "webflow.advanced.gitCheckpointEnabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically create a git commit after each completed phase for easy rollback."
+        },
+        "webflow.advanced.stateCheckpointIntervalMs": {
+          "type": "integer",
+          "default": 30000,
+          "minimum": 5000,
+          "maximum": 300000,
+          "description": "How often (in milliseconds) to auto-save execution state for crash recovery."
+        }
+      }
+    },
+    "chatParticipants": [
+      {
+        "id": "webflow-ai.orchestrator",
+        "name": "webflow",
+        "fullName": "WebFlow AI Orchestrator",
+        "description": "Multi-agent web development coordinator",
+        "isSticky": true,
+        "commands": [
+          {
+            "name": "scaffold",
+            "description": "Generate project structure with optimal agent"
+          },
+          {
+            "name": "component",
+            "description": "Create a UI component"
+          },
+          {
+            "name": "api",
+            "description": "Build API endpoints"
+          },
+          {
+            "name": "test",
+            "description": "Generate and run tests"
+          },
+          {
+            "name": "review",
+            "description": "Multi-agent code review"
+          }
+        ]
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "tsc -p ./",
+    "compile:check": "tsc --noEmit",
+    "watch": "tsc -watch -p ./",
+    "bundle": "node esbuild.mjs",
+    "bundle:watch": "node esbuild.mjs --watch",
+    "package": "npm run compile:check && node esbuild.mjs --production",
+    "lint": "eslint src --ext ts",
+    "pretest": "npm run compile",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "vsix": "npx @vscode/vsce package --no-dependencies",
+    "prepublish:check": "npm run compile:check && npm run lint && npm run test"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/vscode": "^1.109.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "@vitest/coverage-v8": "^3.2.4",
+    "esbuild": "^0.25.0",
+    "eslint": "^9.0.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.2.4"
+  }
+}

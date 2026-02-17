@@ -1,0 +1,349 @@
+/* ===========================================================================
+   WebFlow Settings — Theme-aware styles
+   Uses VS Code CSS custom properties for automatic dark/light mode.
+   =========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--vscode-font-family, sans-serif);
+  font-size: var(--vscode-font-size, 13px);
+  color: var(--vscode-foreground);
+  background: var(--vscode-editor-background);
+  padding: 0;
+  line-height: 1.5;
+}
+
+/* ---------------------------------------------------------------------------
+   Header
+   --------------------------------------------------------------------------- */
+
+.settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--vscode-panel-border, var(--vscode-widget-border, #333));
+}
+
+.settings-header h1 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.settings-header .subtitle {
+  font-size: 12px;
+  color: var(--vscode-descriptionForeground);
+}
+
+/* ---------------------------------------------------------------------------
+   Tab Navigation
+   --------------------------------------------------------------------------- */
+
+.tab-bar {
+  display: flex;
+  border-bottom: 1px solid var(--vscode-panel-border, var(--vscode-widget-border, #333));
+  padding: 0 12px;
+  background: var(--vscode-sideBar-background, var(--vscode-editor-background));
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--vscode-foreground);
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: inherit;
+  opacity: 0.7;
+  transition: opacity 0.15s, border-color 0.15s;
+}
+
+.tab-btn:hover {
+  opacity: 1;
+}
+
+.tab-btn.active {
+  opacity: 1;
+  border-bottom-color: var(--vscode-focusBorder, #007acc);
+  color: var(--vscode-foreground);
+}
+
+/* ---------------------------------------------------------------------------
+   Tab Content
+   --------------------------------------------------------------------------- */
+
+.tab-content {
+  display: none;
+  padding: 20px;
+  max-width: 700px;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* ---------------------------------------------------------------------------
+   Section Cards
+   --------------------------------------------------------------------------- */
+
+.settings-section {
+  margin-bottom: 24px;
+}
+
+.settings-section h2 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--vscode-foreground);
+}
+
+.settings-section p.section-desc {
+  font-size: 12px;
+  color: var(--vscode-descriptionForeground);
+  margin-bottom: 16px;
+}
+
+/* ---------------------------------------------------------------------------
+   Form Controls
+   --------------------------------------------------------------------------- */
+
+.setting-row {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.setting-row label {
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  color: var(--vscode-foreground);
+}
+
+.setting-row .setting-desc {
+  font-size: 12px;
+  color: var(--vscode-descriptionForeground);
+  margin-bottom: 6px;
+}
+
+.setting-row select,
+.setting-row input[type="text"],
+.setting-row input[type="number"] {
+  background: var(--vscode-input-background);
+  color: var(--vscode-input-foreground);
+  border: 1px solid var(--vscode-input-border, var(--vscode-widget-border, #444));
+  padding: 6px 10px;
+  border-radius: 3px;
+  font-size: 13px;
+  font-family: inherit;
+  max-width: 320px;
+  outline: none;
+}
+
+.setting-row select:focus,
+.setting-row input[type="text"]:focus,
+.setting-row input[type="number"]:focus {
+  border-color: var(--vscode-focusBorder, #007acc);
+}
+
+.setting-row input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--vscode-focusBorder, #007acc);
+}
+
+.checkbox-row {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.checkbox-row label {
+  margin-bottom: 0;
+}
+
+/* Multi-select checkboxes for tool types */
+.tool-checkboxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.tool-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--vscode-badge-background, #333);
+  padding: 4px 8px;
+  border-radius: 3px;
+  font-size: 12px;
+}
+
+.tool-checkbox input {
+  width: 14px;
+  height: 14px;
+  accent-color: var(--vscode-focusBorder, #007acc);
+}
+
+/* Agent trust level grid */
+.trust-grid {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 8px 12px;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.trust-grid .agent-label {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.trust-grid .agent-label.claude { color: #a855f7; }
+.trust-grid .agent-label.copilot { color: #3b82f6; }
+.trust-grid .agent-label.codex { color: #22c55e; }
+
+.trust-grid select {
+  max-width: 160px;
+}
+
+/* ---------------------------------------------------------------------------
+   Footer
+   --------------------------------------------------------------------------- */
+
+.settings-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  border-top: 1px solid var(--vscode-panel-border, var(--vscode-widget-border, #333));
+  position: sticky;
+  bottom: 0;
+  background: var(--vscode-editor-background);
+}
+
+.footer-left {
+  display: flex;
+  gap: 8px;
+}
+
+.footer-right {
+  display: flex;
+  gap: 8px;
+}
+
+/* ---------------------------------------------------------------------------
+   Buttons
+   --------------------------------------------------------------------------- */
+
+.btn {
+  padding: 6px 14px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: inherit;
+  transition: opacity 0.15s;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+.btn-primary {
+  background: var(--vscode-button-background);
+  color: var(--vscode-button-foreground);
+}
+
+.btn-primary:hover {
+  background: var(--vscode-button-hoverBackground, var(--vscode-button-background));
+}
+
+.btn-secondary {
+  background: var(--vscode-button-secondaryBackground, #333);
+  color: var(--vscode-button-secondaryForeground, var(--vscode-foreground));
+}
+
+.btn-secondary:hover {
+  background: var(--vscode-button-secondaryHoverBackground, #444);
+}
+
+/* ---------------------------------------------------------------------------
+   Validation Errors
+   --------------------------------------------------------------------------- */
+
+.validation-errors {
+  margin: 8px 20px;
+  padding: 0;
+  list-style: none;
+}
+
+.validation-errors:empty {
+  display: none;
+}
+
+.validation-error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  margin-bottom: 4px;
+  background: var(--vscode-inputValidation-errorBackground, rgba(255, 0, 0, 0.1));
+  border: 1px solid var(--vscode-inputValidation-errorBorder, #f44);
+  border-radius: 3px;
+  font-size: 12px;
+  color: var(--vscode-errorForeground, #f44);
+}
+
+.validation-error::before {
+  content: "!";
+  font-weight: bold;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--vscode-inputValidation-errorBorder, #f44);
+  color: #fff;
+  font-size: 10px;
+  flex-shrink: 0;
+}
+
+/* ---------------------------------------------------------------------------
+   Success Toast
+   --------------------------------------------------------------------------- */
+
+.toast {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  padding: 10px 16px;
+  border-radius: 4px;
+  font-size: 13px;
+  z-index: 100;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
+}
+
+.toast.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toast.success {
+  background: var(--vscode-testing-iconPassed, #22c55e);
+  color: #fff;
+}

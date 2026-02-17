@@ -1,0 +1,125 @@
+{
+  "forProjectTypes": ["ecommerce"],
+  "name": "E-commerce Store",
+  "description": "Full-featured online store with product catalog, cart, checkout, and payment processing",
+  "defaultStack": {
+    "framework": "Next.js",
+    "database": "PostgreSQL",
+    "orm": "Prisma",
+    "payment": "Stripe",
+    "auth": "Auth.js"
+  },
+  "phases": [
+    {
+      "id": "setup",
+      "label": "Project Setup",
+      "description": "Initialize project structure, database, and authentication",
+      "tasks": [
+        {
+          "id": "init-project",
+          "label": "Initialize Next.js project",
+          "prompt": "Create a new Next.js 14 project with TypeScript, Tailwind CSS, ESLint, and the App Router. Set up the directory structure with src/app, src/components, src/lib, and src/types.",
+          "agent": "copilot",
+          "dependsOn": [],
+          "estimatedMinutes": 5,
+          "parallelizable": false
+        },
+        {
+          "id": "setup-database",
+          "label": "Configure PostgreSQL with Prisma",
+          "prompt": "Set up Prisma ORM with PostgreSQL. Create the initial schema with User, Product, Category, CartItem, and Order models. Include proper relations, indexes, and timestamps.",
+          "agent": "claude",
+          "dependsOn": ["init-project"],
+          "estimatedMinutes": 10,
+          "parallelizable": false
+        },
+        {
+          "id": "setup-auth",
+          "label": "Set up authentication",
+          "prompt": "Configure Auth.js (NextAuth) with email/password and Google OAuth. Set up session handling, middleware for protected routes, and user registration flow.",
+          "agent": "claude",
+          "dependsOn": ["init-project"],
+          "estimatedMinutes": 10,
+          "parallelizable": true
+        }
+      ]
+    },
+    {
+      "id": "core",
+      "label": "Core Features",
+      "description": "Build the main e-commerce functionality",
+      "tasks": [
+        {
+          "id": "product-catalog",
+          "label": "Product catalog and search",
+          "prompt": "Build the product catalog: listing page with grid/list view, product detail page, category filtering, and search functionality. Use server components for SEO.",
+          "agent": "claude",
+          "dependsOn": ["setup-database"],
+          "estimatedMinutes": 15,
+          "parallelizable": false
+        },
+        {
+          "id": "shopping-cart",
+          "label": "Shopping cart",
+          "prompt": "Implement shopping cart: add/remove items, quantity updates, persistent cart (localStorage + database sync for logged-in users), cart summary component.",
+          "agent": "claude",
+          "dependsOn": ["product-catalog"],
+          "estimatedMinutes": 10,
+          "parallelizable": false
+        },
+        {
+          "id": "stripe-integration",
+          "label": "Stripe payment integration",
+          "prompt": "Integrate Stripe: create checkout sessions, handle webhooks for payment confirmation, store payment records, implement refund support.",
+          "agent": "claude",
+          "dependsOn": ["setup-database"],
+          "estimatedMinutes": 15,
+          "parallelizable": true
+        },
+        {
+          "id": "product-ui",
+          "label": "Product listing UI components",
+          "prompt": "Create reusable UI components: ProductCard, ProductGrid, CategoryNav, SearchBar, PriceFilter, SortDropdown. Use Tailwind CSS with responsive design.",
+          "agent": "copilot",
+          "dependsOn": ["product-catalog"],
+          "estimatedMinutes": 10,
+          "parallelizable": true
+        }
+      ]
+    },
+    {
+      "id": "polish",
+      "label": "Polish & Quality",
+      "description": "Checkout flow, tests, and responsive design",
+      "tasks": [
+        {
+          "id": "checkout-flow",
+          "label": "Checkout flow",
+          "prompt": "Build the complete checkout flow: address form, shipping options, order summary, Stripe payment element, order confirmation page, email notification.",
+          "agent": "claude",
+          "dependsOn": ["shopping-cart", "stripe-integration"],
+          "estimatedMinutes": 15,
+          "parallelizable": false
+        },
+        {
+          "id": "test-generation",
+          "label": "Generate test suite",
+          "prompt": "Generate comprehensive tests: unit tests for cart logic and price calculations, API route tests for products and orders, component tests for ProductCard and CartSummary.",
+          "agent": "codex",
+          "dependsOn": ["checkout-flow"],
+          "estimatedMinutes": 10,
+          "parallelizable": true
+        },
+        {
+          "id": "responsive-styling",
+          "label": "Responsive design polish",
+          "prompt": "Ensure all pages are fully responsive: mobile navigation, touch-friendly cart, responsive product grid, tablet-optimized checkout form.",
+          "agent": "copilot",
+          "dependsOn": ["product-ui"],
+          "estimatedMinutes": 5,
+          "parallelizable": true
+        }
+      ]
+    }
+  ]
+}

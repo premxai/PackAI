@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366f1"/>
+      <stop offset="100%" style="stop-color:#8b5cf6"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="256" height="256" rx="32" fill="url(#bg)"/>
+  <!-- Three agent circles -->
+  <circle cx="128" cy="80" r="24" fill="#fff" opacity="0.95"/>
+  <circle cx="76" cy="168" r="24" fill="#fff" opacity="0.85"/>
+  <circle cx="180" cy="168" r="24" fill="#fff" opacity="0.85"/>
+  <!-- Connection lines -->
+  <line x1="128" y1="104" x2="76" y2="144" stroke="#fff" stroke-width="3" opacity="0.5"/>
+  <line x1="128" y1="104" x2="180" y2="144" stroke="#fff" stroke-width="3" opacity="0.5"/>
+  <line x1="76" y1="168" x2="180" y2="168" stroke="#fff" stroke-width="3" opacity="0.5"/>
+  <!-- Agent labels -->
+  <text x="128" y="86" text-anchor="middle" fill="#6366f1" font-family="system-ui" font-weight="700" font-size="22">C</text>
+  <text x="76" y="174" text-anchor="middle" fill="#6366f1" font-family="system-ui" font-weight="700" font-size="22">P</text>
+  <text x="180" y="174" text-anchor="middle" fill="#6366f1" font-family="system-ui" font-weight="700" font-size="22">X</text>
+  <!-- WebFlow label -->
+  <text x="128" y="230" text-anchor="middle" fill="#fff" font-family="system-ui" font-weight="600" font-size="18" opacity="0.9">WebFlow</text>
+</svg>
