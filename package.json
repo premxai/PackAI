@@ -3,7 +3,7 @@
   "displayName": "WebFlow AI Orchestrator",
   "description": "Coordinate Claude, Copilot, and Codex agents to build web projects together. Describe your project, get an intelligent execution plan, and let three AI agents collaborate — each assigned to the tasks they do best.",
   "version": "0.1.0",
-  "publisher": "webflow-ai",
+  "publisher": "premxai",
   "license": "MIT",
   "icon": "media/icon.png",
   "galleryBanner": {
@@ -12,12 +12,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/anthropics/webflow-ai-orchestrator"
+    "url": "https://github.com/premxai/PackAI.git"
   },
   "bugs": {
-    "url": "https://github.com/anthropics/webflow-ai-orchestrator/issues"
+    "url": "https://github.com/premxai/PackAI/issues"
   },
-  "homepage": "https://github.com/anthropics/webflow-ai-orchestrator#readme",
+  "homepage": "https://github.com/premxai/PackAI#readme",
   "engines": {
     "vscode": "^1.109.0"
   },
