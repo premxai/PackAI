@@ -2,7 +2,7 @@
 /// <reference lib="dom" />
 
 /**
- * WebFlow Settings — Client-side webview logic.
+ * PackAI Settings — Client-side webview logic.
  *
  * Communicates with the extension host via postMessage / onmessage.
  * No external dependencies — vanilla JS, IIFE pattern.
@@ -11,7 +11,7 @@
   // @ts-ignore
   const vscode = acquireVsCodeApi();
 
-  /** @type {import("../src/settings/types").WebFlowSettings | null} */
+  /** @type {import("../src/settings/types").PackAISettings | null} */
   let currentSettings = null;
 
   const TOOL_TYPES = ["READ", "CREATE", "EDIT", "DELETE", "TERMINAL", "WEB_SEARCH"];
@@ -69,7 +69,7 @@
   // -----------------------------------------------------------------------
 
   /**
-   * @param {import("../src/settings/types").WebFlowSettings} s
+   * @param {import("../src/settings/types").PackAISettings} s
    */
   function populateForm(s) {
     // Agent preferences

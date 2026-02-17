@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to the WebFlow AI Orchestrator are documented here.
+All notable changes to the PackAI are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -57,7 +57,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Settings webview panel for visual configuration
 
 #### Error Handling
-- Typed error hierarchy with `WebFlowError` base class and 6 specific error types
+- Typed error hierarchy with `PackAIError` base class and 6 specific error types
 - Agent fallback coordinator (primary fails, automatically tries next agent)
 - Rate limit queue with FIFO drain
 - Execution state manager with checkpoint, resume, and autosave
@@ -83,4 +83,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 3 example project configurations
 - Demo video script
 
-[0.1.0]: https://github.com/your-org/webflow-ai-orchestrator/releases/tag/v0.1.0
+[0.1.0]: https://github.com/your-org/packai/releases/tag/v0.1.0

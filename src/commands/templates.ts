@@ -18,16 +18,16 @@ export function registerTemplateCommands(
   deps: CommandDeps
 ): void {
   context.subscriptions.push(
-    vscode.commands.registerCommand("webflow.browseTemplates", () =>
+    vscode.commands.registerCommand("packai.browseTemplates", () =>
       browseTemplates(deps)
     ),
-    vscode.commands.registerCommand("webflow.createTemplate", () =>
+    vscode.commands.registerCommand("packai.createTemplate", () =>
       createTemplateFromPlan(deps)
     ),
-    vscode.commands.registerCommand("webflow.importTemplate", () =>
+    vscode.commands.registerCommand("packai.importTemplate", () =>
       importTemplate(deps)
     ),
-    vscode.commands.registerCommand("webflow.exportTemplate", () =>
+    vscode.commands.registerCommand("packai.exportTemplate", () =>
       exportTemplate(deps)
     )
   );
@@ -51,7 +51,7 @@ async function browseTemplates(deps: CommandDeps): Promise<void> {
 
     const picked = await vscode.window.showQuickPick(items, {
       placeHolder: "Select a template to view details",
-      title: "WebFlow: Browse Templates",
+      title: "PackAI: Browse Templates",
     });
 
     if (!picked) return;
@@ -97,7 +97,7 @@ async function createTemplateFromPlan(deps: CommandDeps): Promise<void> {
   try {
     if (!currentPlan) {
       void vscode.window.showWarningMessage(
-        "WebFlow: No active plan. Start a project first."
+        "PackAI: No active plan. Start a project first."
       );
       return;
     }
@@ -152,7 +152,7 @@ async function createTemplateFromPlan(deps: CommandDeps): Promise<void> {
     registerTemplate(template);
 
     void vscode.window.showInformationMessage(
-      `WebFlow: Template "${name}" created${dir ? ` and saved to ${dir}` : ""}.`
+      `PackAI: Template "${name}" created${dir ? ` and saved to ${dir}` : ""}.`
     );
   } catch (err) {
     handleCommandError("createTemplate", err, deps);
@@ -170,7 +170,7 @@ async function importTemplate(deps: CommandDeps): Promise<void> {
     const files = await vscode.window.showOpenDialog({
       canSelectMany: false,
       filters: { "JSON files": ["json"] },
-      title: "Import WebFlow Template",
+      title: "Import PackAI Template",
     });
 
     if (!files || files.length === 0) return;
@@ -181,7 +181,7 @@ async function importTemplate(deps: CommandDeps): Promise<void> {
     // Basic validation
     if (!parsed.name || !parsed.phases || !Array.isArray(parsed.phases)) {
       void vscode.window.showErrorMessage(
-        "WebFlow: Invalid template file. Must have 'name' and 'phases' fields."
+        "PackAI: Invalid template file. Must have 'name' and 'phases' fields."
       );
       return;
     }
@@ -190,7 +190,7 @@ async function importTemplate(deps: CommandDeps): Promise<void> {
     logger.info(`Imported template: ${parsed.name}`);
 
     void vscode.window.showInformationMessage(
-      `WebFlow: Template "${parsed.name}" imported (${parsed.phases.length} phases).`
+      `PackAI: Template "${parsed.name}" imported (${parsed.phases.length} phases).`
     );
   } catch (err) {
     handleCommandError("importTemplate", err, deps);
@@ -214,7 +214,7 @@ async function exportTemplate(deps: CommandDeps): Promise<void> {
 
     const picked = await vscode.window.showQuickPick(items, {
       placeHolder: "Select a template to export",
-      title: "WebFlow: Export Template",
+      title: "PackAI: Export Template",
     });
 
     if (!picked) return;
@@ -224,7 +224,7 @@ async function exportTemplate(deps: CommandDeps): Promise<void> {
         picked.template.name.toLowerCase().replace(/\s+/g, "-") + ".json"
       ),
       filters: { "JSON files": ["json"] },
-      title: "Export WebFlow Template",
+      title: "Export PackAI Template",
     });
 
     if (!uri) return;
@@ -237,7 +237,7 @@ async function exportTemplate(deps: CommandDeps): Promise<void> {
 
     logger.info(`Exported template "${picked.template.name}" to ${uri.fsPath}`);
     void vscode.window.showInformationMessage(
-      `WebFlow: Template "${picked.template.name}" exported.`
+      `PackAI: Template "${picked.template.name}" exported.`
     );
   } catch (err) {
     handleCommandError("exportTemplate", err, deps);

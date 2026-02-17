@@ -139,15 +139,15 @@ export class VsCodeStateStoreAdapter implements IStateStore {
   constructor(private readonly globalState: vscode.Memento) {}
 
   async save(key: string, state: unknown): Promise<void> {
-    await this.globalState.update(`webflow.state.${key}`, state);
+    await this.globalState.update(`packai.state.${key}`, state);
   }
 
   async load<T>(key: string): Promise<T | null> {
-    return this.globalState.get<T>(`webflow.state.${key}`) ?? null;
+    return this.globalState.get<T>(`packai.state.${key}`) ?? null;
   }
 
   async delete(key: string): Promise<void> {
-    await this.globalState.update(`webflow.state.${key}`, undefined);
+    await this.globalState.update(`packai.state.${key}`, undefined);
   }
 }
 
@@ -169,7 +169,7 @@ export class VsCodeEnvironmentDetector implements IEnvironmentDetector {
     if (this.settingsProvider) {
       return this.settingsProvider.getSettings().approval.productionWorkspace;
     }
-    const config = vscode.workspace.getConfiguration("webflow");
+    const config = vscode.workspace.getConfiguration("packai");
     return config.get<boolean>("approval.productionWorkspace", false);
   }
 }

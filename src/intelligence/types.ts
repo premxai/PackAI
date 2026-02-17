@@ -254,7 +254,7 @@ export interface BenchmarkEntry {
   readonly timestamp: string;
 }
 
-/** Persistent benchmark store shape (serialized to .webflow/benchmarks.json) */
+/** Persistent benchmark store shape (serialized to .packai/benchmarks.json) */
 export interface BenchmarkStore {
   readonly version: 1;
   readonly entries: readonly BenchmarkEntry[];

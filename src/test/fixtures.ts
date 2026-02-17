@@ -40,7 +40,7 @@ import type {
   AgentExecutionError,
 } from "../execution/agents/types";
 import type { IStateStore } from "../utils/errorRecovery";
-import type { WebFlowSettings } from "../settings/types";
+import type { PackAISettings } from "../settings/types";
 import { SessionManager } from "../orchestration/sessionManager";
 import { DEFAULT_SETTINGS } from "../settings/settingsService";
 import { analyzeIntent, WorkflowGenerator, AgentSelector } from "../intelligence";
@@ -228,8 +228,8 @@ export function makeResolutionOption(
 }
 
 export function makeSettings(
-  overrides?: Partial<WebFlowSettings>
-): WebFlowSettings {
+  overrides?: Partial<PackAISettings>
+): PackAISettings {
   return {
     ...DEFAULT_SETTINGS,
     ...overrides,

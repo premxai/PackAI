@@ -1,6 +1,6 @@
 # Architecture Overview
 
-This document describes the system design of the WebFlow AI Orchestrator VS Code extension.
+This document describes the system design of the PackAI VS Code extension.
 
 ## Design Principles
 
@@ -125,14 +125,14 @@ SessionManager.createSession(agent, task)
 | File | Responsibility |
 |------|---------------|
 | `settingsService.ts` | `DEFAULT_SETTINGS`, `resolveSettings()` (merges raw config with defaults), `validateSettings()` (returns validation errors) |
-| `vscodeSettingsAdapter.ts` | Reads `webflow.*` config keys via VS Code API, writes via `updateSetting()` |
-| `types.ts` | `WebFlowSettings` with nested `AgentPreferencesSettings`, `ApprovalSettings`, `UiSettings`, `AdvancedSettings` |
+| `vscodeSettingsAdapter.ts` | Reads `packai.*` config keys via VS Code API, writes via `updateSetting()` |
+| `types.ts` | `PackAISettings` with nested `AgentPreferencesSettings`, `ApprovalSettings`, `UiSettings`, `AdvancedSettings` |
 
 ### `src/utils/` -- Error Handling and Telemetry
 
 | File | Responsibility |
 |------|---------------|
-| `errors.ts` | `WebFlowError` base class with typed subclasses: `AgentFailureError`, `AllAgentsExhaustedError`, `RateLimitError`, `ConflictResolutionError`, `GitOperationError`, `StatePersistenceError`. Also: `normalizeError()`, `getUserMessage()`, `isAgentExecutionError()` |
+| `errors.ts` | `PackAIError` base class with typed subclasses: `AgentFailureError`, `AllAgentsExhaustedError`, `RateLimitError`, `ConflictResolutionError`, `GitOperationError`, `StatePersistenceError`. Also: `normalizeError()`, `getUserMessage()`, `isAgentExecutionError()` |
 | `errorRecovery.ts` | `AgentFallbackCoordinator` (tries fallback agents on failure), `RateLimitQueue` (FIFO drain queue), `ExecutionStateManager` (checkpoint/resume/autosave), `NodeGitService` (git operations for rollback) |
 | `telemetry.ts` | `ErrorFrequencyTracker` for local error diagnostics (no external data sent) |
 

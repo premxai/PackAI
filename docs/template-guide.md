@@ -1,6 +1,6 @@
 # Template Creation Guide
 
-Workflow templates define the phases and tasks for a project type. WebFlow ships with 5 built-in templates and supports custom templates.
+Workflow templates define the phases and tasks for a project type. PackAI ships with 5 built-in templates and supports custom templates.
 
 ## Template Structure
 
@@ -84,15 +84,15 @@ A template is a JSON object with this shape:
 
 ### Method 1: From an Active Plan
 
-1. Start a project with **WebFlow: Start Project**
-2. Once the plan is generated, run **WebFlow: Create Template from Plan**
+1. Start a project with **PackAI: Start Project**
+2. Once the plan is generated, run **PackAI: Create Template from Plan**
 3. Enter a name and description
 4. The template is registered immediately and optionally saved to disk
 
 ### Method 2: From a JSON File
 
 1. Create a `.json` file following the structure above
-2. Run **WebFlow: Import Template** and select the file
+2. Run **PackAI: Import Template** and select the file
 3. The template is validated and registered
 
 ### Method 3: Programmatically
@@ -175,7 +175,7 @@ Set `parallelizable: false` for tasks that:
 
 ### Export a Template
 
-1. Run **WebFlow: Export Template**
+1. Run **PackAI: Export Template**
 2. Select the template from the list
 3. Choose a save location
 
@@ -185,17 +185,17 @@ Add exported templates to your repository:
 
 ```
 your-project/
-└── .webflow/
+└── .packai/
     └── templates/
         ├── ecommerce-custom.json
         └── dashboard-internal.json
 ```
 
-Set `webflow.advanced.customTemplatesDirectory` to `.webflow/templates` so they're auto-loaded.
+Set `packai.advanced.customTemplatesDirectory` to `.packai/templates` so they're auto-loaded.
 
 ## Validation Rules
 
-When importing or creating a template, WebFlow validates:
+When importing or creating a template, PackAI validates:
 
 1. `name` is non-empty
 2. `phases` is a non-empty array

@@ -1,13 +1,13 @@
 # Contributing Guide
 
-Thank you for contributing to the WebFlow AI Orchestrator. This guide covers the development workflow, code conventions, and testing requirements.
+Thank you for contributing to the PackAI. This guide covers the development workflow, code conventions, and testing requirements.
 
 ## Development Setup
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/webflow-ai-orchestrator.git
-cd webflow-ai-orchestrator
+git clone https://github.com/your-org/packai.git
+cd packai
 
 # Install dependencies
 npm install
@@ -24,7 +24,7 @@ npm test
 1. Open the project in VS Code
 2. Press **F5** to launch the Extension Development Host
 3. The extension activates in the new window
-4. Open the Command Palette (`Ctrl+Shift+P`) and run "WebFlow: Start Project"
+4. Open the Command Palette (`Ctrl+Shift+P`) and run "PackAI: Start Project"
 
 ## Project Architecture
 
@@ -62,7 +62,7 @@ See [architecture.md](architecture.md) for the full system design. Key points:
 
 ### Error Handling
 
-- Extend `WebFlowError` for new error types (see `src/utils/errors.ts`)
+- Extend `PackAIError` for new error types (see `src/utils/errors.ts`)
 - Every error must have a `code` (machine-readable) and `userMessage` (display-safe)
 - Use `normalizeError()` to wrap unknown errors
 - Use `getUserMessage()` to extract safe display text
@@ -83,7 +83,7 @@ See [architecture.md](architecture.md) for the full system design. Key points:
 
 ```typescript
 context.subscriptions.push(
-  vscode.commands.registerCommand("webflow.myCommand", () =>
+  vscode.commands.registerCommand("packai.myCommand", () =>
     myCommandHandler(deps)
   )
 );
@@ -93,9 +93,9 @@ context.subscriptions.push(
 
 ```json
 {
-  "command": "webflow.myCommand",
+  "command": "packai.myCommand",
   "title": "My Command",
-  "category": "WebFlow",
+  "category": "PackAI",
   "icon": "$(icon-name)"
 }
 ```

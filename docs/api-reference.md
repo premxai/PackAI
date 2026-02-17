@@ -1,6 +1,6 @@
 # API Reference
 
-Public API reference for the WebFlow AI Orchestrator. This covers the main classes and functions available for extension development and customization.
+Public API reference for the PackAI. This covers the main classes and functions available for extension development and customization.
 
 ## Intelligence Layer
 
@@ -299,11 +299,11 @@ Stop draining and reject all pending requests.
 
 **File:** `src/utils/errors.ts`
 
-All errors extend `WebFlowError`:
+All errors extend `PackAIError`:
 
 | Error Class | Code | Description |
 |-------------|------|-------------|
-| `WebFlowError` | varies | Base class with `code`, `message`, `userMessage` |
+| `PackAIError` | varies | Base class with `code`, `message`, `userMessage` |
 | `AgentFailureError` | `agent-*` | Agent execution failure (wraps `AgentExecutionError`) |
 | `AllAgentsExhaustedError` | `all-agents-exhausted` | All fallback agents failed |
 | `RateLimitError` | `rate-limit` | Queue full or disposed |
@@ -331,10 +331,10 @@ All errors extend `WebFlowError`:
 
 Merges raw configuration values with defaults and validates.
 
-#### `validate(settings: WebFlowSettings): ValidationError[]`
+#### `validate(settings: PackAISettings): ValidationError[]`
 
 Returns an array of validation errors (empty if valid).
 
-#### `DEFAULT_SETTINGS: WebFlowSettings`
+#### `DEFAULT_SETTINGS: PackAISettings`
 
 The complete default settings object.

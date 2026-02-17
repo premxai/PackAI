@@ -1,6 +1,6 @@
-# WebFlow AI Orchestrator
+# PackAI
 
-A VS Code extension that intelligently coordinates **Claude**, **Copilot**, and **Codex** agents to build web projects faster. Instead of switching between AI tools, WebFlow analyzes your project, creates an execution plan, and assigns each task to the best agent automatically.
+A VS Code extension that intelligently coordinates **Claude**, **Copilot**, and **Codex** agents to build web projects faster. Instead of switching between AI tools, PackAI analyzes your project, creates an execution plan, and assigns each task to the best agent automatically.
 
 <!-- TODO: Replace with actual GIF recordings -->
 <!-- ![Demo: Start Project](docs/assets/demo-start-project.gif) -->
@@ -8,7 +8,7 @@ A VS Code extension that intelligently coordinates **Claude**, **Copilot**, and 
 ## What It Does
 
 1. **You describe a project** (e.g., "Build an e-commerce store with Stripe payments")
-2. **WebFlow analyzes your intent** and detects project type, features, and complexity
+2. **PackAI analyzes your intent** and detects project type, features, and complexity
 3. **It generates an execution plan** with phased tasks and dependency ordering
 4. **Each task is assigned to the optimal agent** based on task characteristics:
    - **Claude** -- architecture, database schemas, complex logic
@@ -27,8 +27,8 @@ A VS Code extension that intelligently coordinates **Claude**, **Copilot**, and 
 ### From Source (Development)
 
 ```bash
-git clone https://github.com/your-org/webflow-ai-orchestrator.git
-cd webflow-ai-orchestrator
+git clone https://github.com/your-org/packai.git
+cd packai
 npm install
 npm run compile
 ```
@@ -39,22 +39,22 @@ Then press **F5** in VS Code to launch the Extension Development Host.
 
 ```bash
 npm run package    # creates .vsix file
-code --install-extension webflow-ai-orchestrator-0.1.0.vsix
+code --install-extension packai-0.1.0.vsix
 ```
 
 ## Quick Start
 
 1. **Open a workspace** in VS Code (File > Open Folder)
-2. **Start a project** via Command Palette: `Ctrl+Shift+P` > "WebFlow: Start Project"
+2. **Start a project** via Command Palette: `Ctrl+Shift+P` > "PackAI: Start Project"
 3. **Pick a project type** (E-commerce, Landing Page, Dashboard, Blog, or Custom)
 4. **View the execution plan** in the dashboard panel
-5. **Use chat** for details: type `@webflow /scaffold Build an online store with Stripe` in the Chat panel
+5. **Use chat** for details: type `@packai /scaffold Build an online store with Stripe` in the Chat panel
 
 ## Features
 
 ### Intelligent Intent Analysis
 
-WebFlow parses natural language descriptions and extracts:
+PackAI parses natural language descriptions and extracts:
 
 - Project type (e-commerce, landing, dashboard, blog, etc.)
 - Features (auth, payments, real-time, search, etc.)
@@ -122,7 +122,7 @@ Every agent output is validated through 4 gates:
 
 ## Command Palette
 
-All commands are under the "WebFlow" category:
+All commands are under the "PackAI" category:
 
 | Command | Keybinding | Description |
 |---------|------------|-------------|
@@ -144,16 +144,16 @@ All commands are under the "WebFlow" category:
 
 | Command | Description |
 |---------|-------------|
-| `@webflow` | Freeform web development help |
-| `@webflow /scaffold` | Analyze intent and generate execution plan |
-| `@webflow /component` | Create a UI component |
-| `@webflow /api` | Build API endpoints |
-| `@webflow /test` | Generate and run tests |
-| `@webflow /review` | Multi-agent code review |
+| `@packai` | Freeform web development help |
+| `@packai /scaffold` | Analyze intent and generate execution plan |
+| `@packai /component` | Create a UI component |
+| `@packai /api` | Build API endpoints |
+| `@packai /test` | Generate and run tests |
+| `@packai /review` | Multi-agent code review |
 
 ## Configuration
 
-All settings are under the `webflow.*` namespace in VS Code settings:
+All settings are under the `packai.*` namespace in VS Code settings:
 
 | Setting | Default | Description |
 |---------|---------|-------------|
@@ -256,15 +256,15 @@ GitHub Copilot must be active and signed in. The extension uses the Copilot Lang
 
 ### Agent selection seems wrong
 
-Check your `webflow.agentPreferences.selectionStrategy` setting. The default `intelligent` mode uses task signals; try `preferClaude` or `preferCopilot` to force a specific agent.
+Check your `packai.agentPreferences.selectionStrategy` setting. The default `intelligent` mode uses task signals; try `preferClaude` or `preferCopilot` to force a specific agent.
 
 ### Dashboard not updating
 
-Run "WebFlow: Open Dashboard" from the Command Palette to focus the panel. The dashboard only receives events when it's visible.
+Run "PackAI: Open Dashboard" from the Command Palette to focus the panel. The dashboard only receives events when it's visible.
 
 ### Extension not activating
 
-Ensure your VS Code version is 1.109+ and the extension is enabled. Check the "WebFlow AI Orchestrator" output channel for logs.
+Ensure your VS Code version is 1.109+ and the extension is enabled. Check the "PackAI" output channel for logs.
 
 ### Tests failing after changes
 

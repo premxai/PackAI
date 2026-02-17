@@ -1,4 +1,4 @@
-# WebFlow AI Orchestrator — Technical Feasibility Report
+# PackAI — Technical Feasibility Report
 
 > Research date: February 16, 2026
 > Target: VS Code Extension coordinating Claude, Codex, and Copilot agents for web development
@@ -25,9 +25,9 @@ The primary API for creating AI-powered extensions. Our orchestrator would regis
 {
   "contributes": {
     "chatParticipants": [{
-      "id": "webflow-ai.orchestrator",
-      "name": "webflow",
-      "fullName": "WebFlow AI Orchestrator",
+      "id": "packai.orchestrator",
+      "name": "packai",
+      "fullName": "PackAI",
       "description": "Intelligent multi-agent web development coordinator",
       "isSticky": true
     }]
@@ -46,11 +46,11 @@ const handler: vscode.ChatRequestHandler = async (
   // Analyze intent, route to appropriate agent
   stream.progress('Analyzing task and selecting optimal agent...');
   stream.markdown('Delegating component scaffolding to Claude...');
-  stream.button({ command: 'webflow.viewPlan', title: 'View Execution Plan' });
+  stream.button({ command: 'packai.viewPlan', title: 'View Execution Plan' });
   return { metadata: { agentUsed: 'claude', taskType: 'scaffold' } };
 };
 
-const participant = vscode.chat.createChatParticipant('webflow-ai.orchestrator', handler);
+const participant = vscode.chat.createChatParticipant('packai.orchestrator', handler);
 ```
 
 **Response streaming capabilities:**
@@ -112,18 +112,18 @@ Register custom language model providers — useful if we want to add models not
 {
   "contributes": {
     "languageModelChatProviders": [{
-      "vendor": "webflow-custom",
-      "displayName": "WebFlow Custom Models"
+      "vendor": "packai-custom",
+      "displayName": "PackAI Custom Models"
     }]
   }
 }
 
 // Extension code
-vscode.lm.registerLanguageModelChatProvider('webflow-custom', {
+vscode.lm.registerLanguageModelChatProvider('packai-custom', {
   async provideLanguageModelChatInformation(options, token) {
     return [{
-      id: 'webflow-specialized',
-      name: 'WebFlow Web Dev Specialist',
+      id: 'packai-specialized',
+      name: 'PackAI Web Dev Specialist',
       family: 'custom',
       version: '1.0.0',
       maxInputTokens: 128000,
@@ -174,15 +174,15 @@ interface ChatSessionCapabilities {
 ```typescript
 // Create a session controller
 const controller = vscode.chat.createChatSessionItemController(
-  'webflow-orchestrator',
-  'WebFlow Sessions'
+  'packai-orchestrator',
+  'PackAI Sessions'
 );
 
 // Add sessions
 controller.items.add(sessionItem);
 
 // Register content provider
-vscode.chat.registerChatSessionContentProvider('webflow-orchestrator', {
+vscode.chat.registerChatSessionContentProvider('packai-orchestrator', {
   async provideChatSessionContent(session, token) {
     return {
       history: [...],
@@ -405,7 +405,7 @@ Claude Code (the CLI/VS Code extension) has access to these tools:
 ┌──────────────────────────────────────────────────────┐
 │                    VS Code                            │
 │  ┌────────────────────────────────────────────────┐  │
-│  │        WebFlow AI Orchestrator Extension        │  │
+│  │        PackAI Extension        │  │
 │  │                                                 │  │
 │  │  ┌──────────┐  ┌───────────┐  ┌─────────────┐ │  │
 │  │  │  Chat     │  │  Task     │  │  Workflow    │ │  │
@@ -442,7 +442,7 @@ Claude Code (the CLI/VS Code extension) has access to these tools:
 ### 5.2 Component Breakdown
 
 #### A. Chat Participant (Entry Point)
-- Single `@webflow` participant with slash commands
+- Single `@packai` participant with slash commands
 - Analyzes user intent, determines workflow
 - Streams progress and results back to user
 
@@ -520,7 +520,7 @@ import * as vscode from 'vscode';
 export function activate(context: vscode.ExtensionContext) {
   // 1. Register the main chat participant
   const participant = vscode.chat.createChatParticipant(
-    'webflow-ai.orchestrator',
+    'packai.orchestrator',
     orchestratorHandler
   );
 
@@ -538,15 +538,15 @@ export function activate(context: vscode.ExtensionContext) {
 
   // 2. Register web dev tools
   context.subscriptions.push(
-    vscode.lm.registerTool('webflow-detect-framework', new FrameworkDetectorTool()),
-    vscode.lm.registerTool('webflow-analyze-routes', new RouteAnalyzerTool()),
-    vscode.lm.registerTool('webflow-scaffold', new ScaffoldTool()),
+    vscode.lm.registerTool('packai-detect-framework', new FrameworkDetectorTool()),
+    vscode.lm.registerTool('packai-analyze-routes', new RouteAnalyzerTool()),
+    vscode.lm.registerTool('packai-scaffold', new ScaffoldTool()),
   );
 
   // 3. Register commands
   context.subscriptions.push(
-    vscode.commands.registerCommand('webflow.viewPlan', showExecutionPlan),
-    vscode.commands.registerCommand('webflow.selectAgent', selectPreferredAgent),
+    vscode.commands.registerCommand('packai.viewPlan', showExecutionPlan),
+    vscode.commands.registerCommand('packai.selectAgent', selectPreferredAgent),
   );
 
   context.subscriptions.push(participant);
@@ -618,7 +618,7 @@ function selectAgent(taskType: TaskType): AgentConfig {
 ---
 name: web-planner
 description: Plan web application features and architecture
-tools: ['codebase', 'fetch', 'githubRepo', 'webflow-detect-framework', 'webflow-analyze-routes']
+tools: ['codebase', 'fetch', 'githubRepo', 'packai-detect-framework', 'packai-analyze-routes']
 model: ['Claude Opus 4.5', 'GPT-5.2']
 agents: ['web-implementer']
 handoffs:
@@ -630,8 +630,8 @@ handoffs:
 
 You are an expert web application architect. When given a feature request:
 
-1. Detect the project's framework using #tool:webflow-detect-framework
-2. Analyze existing route structure using #tool:webflow-analyze-routes
+1. Detect the project's framework using #tool:packai-detect-framework
+2. Analyze existing route structure using #tool:packai-analyze-routes
 3. Review the codebase for patterns using #tool:codebase
 4. Create a detailed, step-by-step implementation plan including:
    - Files to create/modify
@@ -646,7 +646,7 @@ You are an expert web application architect. When given a feature request:
 ---
 name: web-implementer
 description: Implement web features following the plan
-tools: ['codebase', 'changes', 'problems', 'webflow-scaffold']
+tools: ['codebase', 'changes', 'problems', 'packai-scaffold']
 model: ['Claude Sonnet 4.5', 'GPT-4o']
 agents: ['web-reviewer']
 handoffs:

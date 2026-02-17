@@ -14,13 +14,13 @@ export function registerSettingsCommands(
   deps: CommandDeps
 ): void {
   context.subscriptions.push(
-    vscode.commands.registerCommand("webflow.configureAgents", () =>
+    vscode.commands.registerCommand("packai.configureAgents", () =>
       configureAgents(deps)
     ),
-    vscode.commands.registerCommand("webflow.configureApproval", () =>
+    vscode.commands.registerCommand("packai.configureApproval", () =>
       configureApproval(deps)
     ),
-    vscode.commands.registerCommand("webflow.resetSettings", () =>
+    vscode.commands.registerCommand("packai.resetSettings", () =>
       resetSettings(deps)
     )
   );
@@ -51,7 +51,7 @@ async function configureAgents(deps: CommandDeps): Promise<void> {
 
     const pickedStrategy = await vscode.window.showQuickPick(strategies, {
       placeHolder: `Current: ${currentStrategy?.label ?? current.agentPreferences.selectionStrategy}`,
-      title: "WebFlow: Agent Selection Strategy",
+      title: "PackAI: Agent Selection Strategy",
     });
 
     if (pickedStrategy) {
@@ -71,7 +71,7 @@ async function configureAgents(deps: CommandDeps): Promise<void> {
 
     const pickedCost = await vscode.window.showQuickPick(costLevels, {
       placeHolder: `Current: ${current.agentPreferences.costOptimizationLevel}`,
-      title: "WebFlow: Cost Optimization Level",
+      title: "PackAI: Cost Optimization Level",
     });
 
     if (pickedCost) {
@@ -82,7 +82,7 @@ async function configureAgents(deps: CommandDeps): Promise<void> {
       logger.info(`Cost optimization updated to: ${pickedCost.value}`);
     }
 
-    void vscode.window.showInformationMessage("WebFlow: Agent preferences updated.");
+    void vscode.window.showInformationMessage("PackAI: Agent preferences updated.");
   } catch (err) {
     handleCommandError("configureAgents", err, deps);
   }
@@ -112,7 +112,7 @@ async function configureApproval(deps: CommandDeps): Promise<void> {
 
       const picked = await vscode.window.showQuickPick(items, {
         placeHolder: `Trust level for ${agent} (current: ${currentLevel})`,
-        title: `WebFlow: ${agent.charAt(0).toUpperCase() + agent.slice(1)} Trust Level`,
+        title: `PackAI: ${agent.charAt(0).toUpperCase() + agent.slice(1)} Trust Level`,
       });
 
       if (picked) {
@@ -122,7 +122,7 @@ async function configureApproval(deps: CommandDeps): Promise<void> {
       }
     }
 
-    void vscode.window.showInformationMessage("WebFlow: Approval rules updated.");
+    void vscode.window.showInformationMessage("PackAI: Approval rules updated.");
   } catch (err) {
     handleCommandError("configureApproval", err, deps);
   }
@@ -137,14 +137,14 @@ async function resetSettings(deps: CommandDeps): Promise<void> {
 
   try {
     const confirm = await vscode.window.showWarningMessage(
-      "Reset all WebFlow settings to defaults? This cannot be undone.",
+      "Reset all PackAI settings to defaults? This cannot be undone.",
       { modal: true },
       "Reset All"
     );
 
     if (confirm !== "Reset All") return;
 
-    const config = vscode.workspace.getConfiguration("webflow");
+    const config = vscode.workspace.getConfiguration("packai");
 
     // Reset each section by setting to undefined (removes user overrides)
     const sections = [
@@ -175,7 +175,7 @@ async function resetSettings(deps: CommandDeps): Promise<void> {
     }
 
     logger.info("All settings reset to defaults");
-    void vscode.window.showInformationMessage("WebFlow: All settings reset to defaults.");
+    void vscode.window.showInformationMessage("PackAI: All settings reset to defaults.");
   } catch (err) {
     handleCommandError("resetSettings", err, deps);
   }

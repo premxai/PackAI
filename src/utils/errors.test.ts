@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import {
-  WebFlowError,
+  PackAIError,
   AgentFailureError,
   AllAgentsExhaustedError,
   RateLimitError,
@@ -8,7 +8,7 @@ import {
   StatePersistenceError,
   ConflictEscalationError,
   isAgentExecutionError,
-  isWebFlowError,
+  isPackAIError,
   normalizeError,
   getUserMessage,
 } from "./errors";
@@ -35,9 +35,9 @@ function makeAgentExecutionError(
 // Tests
 // ---------------------------------------------------------------------------
 
-describe("WebFlowError", () => {
+describe("PackAIError", () => {
   it("has code, message, userMessage, and stack", () => {
-    const err = new WebFlowError("test-code", "Internal detail", "User-friendly msg");
+    const err = new PackAIError("test-code", "Internal detail", "User-friendly msg");
     expect(err.code).toBe("test-code");
     expect(err.message).toBe("Internal detail");
     expect(err.userMessage).toBe("User-friendly msg");
@@ -46,13 +46,13 @@ describe("WebFlowError", () => {
   });
 
   it("defaults userMessage when not provided", () => {
-    const err = new WebFlowError("code", "detail");
+    const err = new PackAIError("code", "detail");
     expect(err.userMessage).toBe("Something went wrong. Please try again.");
   });
 
   it("preserves cause", () => {
     const cause = new Error("original");
-    const err = new WebFlowError("code", "msg", undefined, cause);
+    const err = new PackAIError("code", "msg", undefined, cause);
     expect(err.cause).toBe(cause);
   });
 });
@@ -67,7 +67,7 @@ describe("AgentFailureError", () => {
     const err = AgentFailureError.fromPlainObject(plain);
 
     expect(err).toBeInstanceOf(AgentFailureError);
-    expect(err).toBeInstanceOf(WebFlowError);
+    expect(err).toBeInstanceOf(PackAIError);
     expect(err.agentCode).toBe("session-failed");
     expect(err.agent).toBe("copilot");
     expect(err.taskId).toBe("t-42");
@@ -194,23 +194,23 @@ describe("isAgentExecutionError", () => {
   });
 });
 
-describe("isWebFlowError", () => {
-  it("recognizes WebFlowError", () => {
-    expect(isWebFlowError(new WebFlowError("x", "y"))).toBe(true);
+describe("isPackAIError", () => {
+  it("recognizes PackAIError", () => {
+    expect(isPackAIError(new PackAIError("x", "y"))).toBe(true);
   });
 
   it("recognizes subclasses", () => {
-    expect(isWebFlowError(new RateLimitError("x"))).toBe(true);
+    expect(isPackAIError(new RateLimitError("x"))).toBe(true);
   });
 
   it("rejects plain Error", () => {
-    expect(isWebFlowError(new Error("oops"))).toBe(false);
+    expect(isPackAIError(new Error("oops"))).toBe(false);
   });
 });
 
 describe("normalizeError", () => {
-  it("passes through WebFlowError", () => {
-    const err = new WebFlowError("x", "y");
+  it("passes through PackAIError", () => {
+    const err = new PackAIError("x", "y");
     expect(normalizeError(err)).toBe(err);
   });
 
@@ -224,7 +224,7 @@ describe("normalizeError", () => {
   it("wraps native Error", () => {
     const err = new Error("boom");
     const normalized = normalizeError(err);
-    expect(normalized).toBeInstanceOf(WebFlowError);
+    expect(normalized).toBeInstanceOf(PackAIError);
     expect(normalized.code).toBe("unknown");
     expect(normalized.message).toBe("boom");
     expect(normalized.cause).toBe(err);
@@ -243,8 +243,8 @@ describe("normalizeError", () => {
 });
 
 describe("getUserMessage", () => {
-  it("returns userMessage from WebFlowError", () => {
-    const err = new WebFlowError("x", "internal", "User sees this");
+  it("returns userMessage from PackAIError", () => {
+    const err = new PackAIError("x", "internal", "User sees this");
     expect(getUserMessage(err)).toBe("User sees this");
   });
 

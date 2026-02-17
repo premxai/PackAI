@@ -24,7 +24,7 @@ export function registerStartProjectCommand(
   deps: CommandDeps
 ): void {
   context.subscriptions.push(
-    vscode.commands.registerCommand("webflow.startProject", () => startProject(deps))
+    vscode.commands.registerCommand("packai.startProject", () => startProject(deps))
   );
 }
 
@@ -36,7 +36,7 @@ async function startProject(deps: CommandDeps): Promise<void> {
   const root = vscode.workspace.workspaceFolders?.[0];
   if (!root) {
     void vscode.window.showWarningMessage(
-      "WebFlow: Open a folder or workspace first."
+      "PackAI: Open a folder or workspace first."
     );
     return;
   }
@@ -44,7 +44,7 @@ async function startProject(deps: CommandDeps): Promise<void> {
   // Pick project type
   const picked = await vscode.window.showQuickPick(PROJECT_TYPES, {
     placeHolder: "What kind of project do you want to build?",
-    title: "WebFlow: Start Project",
+    title: "PackAI: Start Project",
   });
 
   if (!picked) return; // user cancelled
@@ -69,7 +69,7 @@ async function startProject(deps: CommandDeps): Promise<void> {
     await vscode.window.withProgress(
       {
         location: vscode.ProgressLocation.Notification,
-        title: "WebFlow: Generating execution plan...",
+        title: "PackAI: Generating execution plan...",
         cancellable: false,
       },
       async (progress) => {
@@ -110,12 +110,12 @@ async function startProject(deps: CommandDeps): Promise<void> {
         // 5. Auto-open dashboard
         const settings = settingsAdapter.getSettings();
         if (settings.ui.autoOpenDashboard) {
-          await vscode.commands.executeCommand("webflow.dashboardView.focus");
+          await vscode.commands.executeCommand("packai.dashboardView.focus");
         }
 
         void vscode.window.showInformationMessage(
-          `WebFlow: Plan ready — ${plan.stats.totalTasks} tasks across ${plan.phases.length} phases. ` +
-            `Use @webflow /scaffold in chat for details.`
+          `PackAI: Plan ready — ${plan.stats.totalTasks} tasks across ${plan.phases.length} phases. ` +
+            `Use @packai /scaffold in chat for details.`
         );
       }
     );

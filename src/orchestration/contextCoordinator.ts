@@ -6,7 +6,7 @@ import type { AgentRole, ExecutionTask, Feature } from "../intelligence/types";
 // Manages shared context between agents so each agent receives only the
 // information relevant to its task — without pollution from unrelated
 // domains. Tracks provenance (who contributed what, when) and supports
-// persistent serialization to .webflow/context.json.
+// persistent serialization to .packai/context.json.
 //
 // No VS Code dependency — fully testable with Vitest.
 // ===========================================================================
@@ -91,7 +91,7 @@ export interface ContextDeclaration {
   readonly value: string;
 }
 
-/** The full persistent store shape (.webflow/context.json). */
+/** The full persistent store shape (.packai/context.json). */
 export interface ContextStore {
   readonly version: 1;
   readonly entries: readonly ContextEntry[];

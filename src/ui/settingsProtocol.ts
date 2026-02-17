@@ -1,4 +1,4 @@
-import type { WebFlowSettings, SettingsValidationError } from "../settings/types";
+import type { PackAISettings, SettingsValidationError } from "../settings/types";
 
 // ===========================================================================
 // Settings Protocol
@@ -32,6 +32,6 @@ export type SettingsAction =
 // ---------------------------------------------------------------------------
 
 export interface SettingsState {
-  readonly settings: WebFlowSettings;
+  readonly settings: PackAISettings;
   readonly validationErrors: readonly SettingsValidationError[];
 }

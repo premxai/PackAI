@@ -1,32 +1,32 @@
 import * as vscode from "vscode";
 import { SettingsService } from "./settingsService";
-import type { WebFlowSettings } from "./types";
+import type { PackAISettings } from "./types";
 
 // ===========================================================================
 // VS Code Settings Adapter
 //
 // The only settings file that imports vscode. Reads/writes configuration
-// via vscode.workspace.getConfiguration("webflow").
+// via vscode.workspace.getConfiguration("packai").
 // ===========================================================================
 
 /** Abstraction over settings reading — enables testing without vscode. */
 export interface ISettingsProvider {
-  getSettings(): WebFlowSettings;
+  getSettings(): PackAISettings;
   onDidChangeSettings(
-    listener: (settings: WebFlowSettings) => void
+    listener: (settings: PackAISettings) => void
   ): { dispose(): void };
 }
 
 /**
- * Reads WebFlow settings from VS Code's configuration API and validates
+ * Reads PackAI settings from VS Code's configuration API and validates
  * them via {@link SettingsService}. Emits change events when the user
  * modifies settings.
  */
 export class VsCodeSettingsAdapter implements ISettingsProvider {
   private readonly service = new SettingsService();
 
-  getSettings(): WebFlowSettings {
-    const config = vscode.workspace.getConfiguration("webflow");
+  getSettings(): PackAISettings {
+    const config = vscode.workspace.getConfiguration("packai");
     const raw: Record<string, unknown> = {};
 
     // Agent preferences
@@ -65,10 +65,10 @@ export class VsCodeSettingsAdapter implements ISettingsProvider {
   }
 
   onDidChangeSettings(
-    listener: (settings: WebFlowSettings) => void
+    listener: (settings: PackAISettings) => void
   ): { dispose(): void } {
     const disposable = vscode.workspace.onDidChangeConfiguration((e) => {
-      if (e.affectsConfiguration("webflow")) {
+      if (e.affectsConfiguration("packai")) {
         listener(this.getSettings());
       }
     });
@@ -81,7 +81,7 @@ export class VsCodeSettingsAdapter implements ISettingsProvider {
     value: unknown,
     target: vscode.ConfigurationTarget = vscode.ConfigurationTarget.Global
   ): Promise<void> {
-    const config = vscode.workspace.getConfiguration("webflow");
+    const config = vscode.workspace.getConfiguration("packai");
     await config.update(key, value, target);
   }
 }

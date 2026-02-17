@@ -27,7 +27,7 @@ export interface CommandDeps {
   currentPlan: ExecutionPlan | null;
 }
 
-/** Register all WebFlow commands on the extension context. */
+/** Register all PackAI commands on the extension context. */
 export function registerAllCommands(
   context: vscode.ExtensionContext,
   deps: CommandDeps

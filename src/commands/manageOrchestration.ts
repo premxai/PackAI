@@ -13,24 +13,24 @@ export function registerOrchestrationCommands(
   deps: CommandDeps
 ): void {
   context.subscriptions.push(
-    vscode.commands.registerCommand("webflow.pauseOrchestration", () =>
+    vscode.commands.registerCommand("packai.pauseOrchestration", () =>
       pauseOrchestration(deps)
     ),
-    vscode.commands.registerCommand("webflow.resumeOrchestration", () =>
+    vscode.commands.registerCommand("packai.resumeOrchestration", () =>
       resumeOrchestration(deps)
     ),
-    vscode.commands.registerCommand("webflow.cancelOrchestration", () =>
+    vscode.commands.registerCommand("packai.cancelOrchestration", () =>
       cancelOrchestration(deps)
     ),
-    vscode.commands.registerCommand("webflow.viewSessionDetails", () =>
+    vscode.commands.registerCommand("packai.viewSessionDetails", () =>
       viewSessionDetails(deps)
     ),
     vscode.commands.registerCommand(
-      "webflow.retryTask",
+      "packai.retryTask",
       (payload?: { taskId: string }) => retryTask(deps, payload)
     ),
     vscode.commands.registerCommand(
-      "webflow.resolveConflict",
+      "packai.resolveConflict",
       (payload?: { conflictId: string; resolution: string }) =>
         resolveConflict(deps, payload)
     )
@@ -50,7 +50,7 @@ async function pauseOrchestration(deps: CommandDeps): Promise<void> {
       .filter((s) => s.state === "running");
 
     if (active.length === 0) {
-      void vscode.window.showInformationMessage("WebFlow: No running sessions to pause.");
+      void vscode.window.showInformationMessage("PackAI: No running sessions to pause.");
       return;
     }
 
@@ -60,7 +60,7 @@ async function pauseOrchestration(deps: CommandDeps): Promise<void> {
 
     logger.info(`Paused ${active.length} session(s)`);
     void vscode.window.showInformationMessage(
-      `WebFlow: Paused ${active.length} session(s).`
+      `PackAI: Paused ${active.length} session(s).`
     );
   } catch (err) {
     handleCommandError("pauseOrchestration", err, deps);
@@ -80,7 +80,7 @@ async function resumeOrchestration(deps: CommandDeps): Promise<void> {
       .filter((s) => s.state === "paused");
 
     if (paused.length === 0) {
-      void vscode.window.showInformationMessage("WebFlow: No paused sessions to resume.");
+      void vscode.window.showInformationMessage("PackAI: No paused sessions to resume.");
       return;
     }
 
@@ -90,7 +90,7 @@ async function resumeOrchestration(deps: CommandDeps): Promise<void> {
 
     logger.info(`Resumed ${paused.length} session(s)`);
     void vscode.window.showInformationMessage(
-      `WebFlow: Resumed ${paused.length} session(s).`
+      `PackAI: Resumed ${paused.length} session(s).`
     );
   } catch (err) {
     handleCommandError("resumeOrchestration", err, deps);
@@ -108,7 +108,7 @@ async function cancelOrchestration(deps: CommandDeps): Promise<void> {
     const active = sessionManager.getActiveSessions();
 
     if (active.length === 0) {
-      void vscode.window.showInformationMessage("WebFlow: No active sessions to cancel.");
+      void vscode.window.showInformationMessage("PackAI: No active sessions to cancel.");
       return;
     }
 
@@ -126,7 +126,7 @@ async function cancelOrchestration(deps: CommandDeps): Promise<void> {
 
     logger.info(`Cancelled ${active.length} session(s)`);
     void vscode.window.showInformationMessage(
-      `WebFlow: Cancelled ${active.length} session(s).`
+      `PackAI: Cancelled ${active.length} session(s).`
     );
   } catch (err) {
     handleCommandError("cancelOrchestration", err, deps);
@@ -144,7 +144,7 @@ async function viewSessionDetails(deps: CommandDeps): Promise<void> {
     const all = sessionManager.getAllSessions();
 
     if (all.length === 0) {
-      void vscode.window.showInformationMessage("WebFlow: No sessions to display.");
+      void vscode.window.showInformationMessage("PackAI: No sessions to display.");
       return;
     }
 
@@ -166,7 +166,7 @@ async function viewSessionDetails(deps: CommandDeps): Promise<void> {
 
     const picked = await vscode.window.showQuickPick(items, {
       placeHolder: "Select a session to view details",
-      title: "WebFlow: Session Details",
+      title: "PackAI: Session Details",
     });
 
     if (!picked) return;
@@ -197,14 +197,14 @@ async function retryTask(
     const taskId = payload?.taskId;
     if (!taskId) {
       void vscode.window.showWarningMessage(
-        "WebFlow: No task specified for retry. Use the dashboard to retry a specific task."
+        "PackAI: No task specified for retry. Use the dashboard to retry a specific task."
       );
       return;
     }
 
     logger.info(`Retry requested for task: ${taskId}`);
     void vscode.window.showInformationMessage(
-      `WebFlow: Retry queued for task "${taskId}". Full execution coming in Phase 2.`
+      `PackAI: Retry queued for task "${taskId}". Full execution coming in Phase 2.`
     );
   } catch (err) {
     handleCommandError("retryTask", err, deps);
@@ -224,7 +224,7 @@ async function resolveConflict(
   try {
     if (!payload?.conflictId) {
       void vscode.window.showWarningMessage(
-        "WebFlow: No conflict specified. Use the dashboard to resolve conflicts."
+        "PackAI: No conflict specified. Use the dashboard to resolve conflicts."
       );
       return;
     }
@@ -233,7 +233,7 @@ async function resolveConflict(
       `Conflict resolution: ${payload.conflictId} → ${payload.resolution}`
     );
     void vscode.window.showInformationMessage(
-      `WebFlow: Conflict "${payload.conflictId}" resolved with strategy "${payload.resolution}".`
+      `PackAI: Conflict "${payload.conflictId}" resolved with strategy "${payload.resolution}".`
     );
   } catch (err) {
     handleCommandError("resolveConflict", err, deps);

@@ -1,5 +1,5 @@
 import type {
-  WebFlowSettings,
+  PackAISettings,
   AgentPreferencesSettings,
   ApprovalSettings,
   UiSettings,
@@ -52,7 +52,7 @@ const VALID_TOOL_TYPES: readonly ToolType[] = [
 // Defaults
 // ---------------------------------------------------------------------------
 
-export const DEFAULT_SETTINGS: WebFlowSettings = {
+export const DEFAULT_SETTINGS: PackAISettings = {
   agentPreferences: {
     selectionStrategy: "intelligent",
     costOptimizationLevel: "balanced",
@@ -92,20 +92,20 @@ export const DEFAULT_SETTINGS: WebFlowSettings = {
 // ---------------------------------------------------------------------------
 
 /**
- * Resolves raw configuration values into typed {@link WebFlowSettings}.
+ * Resolves raw configuration values into typed {@link PackAISettings}.
  *
  * Invalid values are replaced with defaults (best-effort, never throws).
  * Also provides {@link DEFAULT_SETTINGS} for initial bootstrapping.
  */
 export class SettingsService {
   /**
-   * Resolve raw configuration values into a typed `WebFlowSettings` object.
+   * Resolve raw configuration values into a typed `PackAISettings` object.
    *
    * Invalid individual values are replaced with their defaults and a
    * validation error is recorded — best-effort behaviour that never throws.
    */
   resolve(raw: Readonly<Record<string, unknown>>): {
-    readonly settings: WebFlowSettings;
+    readonly settings: PackAISettings;
     readonly errors: readonly SettingsValidationError[];
   } {
     const errors: SettingsValidationError[] = [];
@@ -119,7 +119,7 @@ export class SettingsService {
   }
 
   /** Validate a fully-resolved settings object. */
-  validate(settings: WebFlowSettings): readonly SettingsValidationError[] {
+  validate(settings: PackAISettings): readonly SettingsValidationError[] {
     const errors: SettingsValidationError[] = [];
     this.validateAgentPreferences(settings.agentPreferences, errors);
     this.validateApproval(settings.approval, errors);

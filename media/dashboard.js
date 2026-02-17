@@ -1,5 +1,5 @@
 // ===========================================================================
-// WebFlow Dashboard — Client-side logic
+// PackAI Dashboard — Client-side logic
 //
 // Runs inside the VS Code webview. Receives typed messages from the
 // extension host and renders updates via DOM manipulation.

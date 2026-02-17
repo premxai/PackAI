@@ -6,13 +6,13 @@ import type { ISettingsProvider } from "../settings/vscodeSettingsAdapter";
 // ===========================================================================
 // Settings Provider
 //
-// Command-opened webview panel for configuring WebFlow settings.
+// Command-opened webview panel for configuring PackAI settings.
 // Uses createWebviewPanel (full-tab editor) instead of WebviewViewProvider
 // (sidebar) because settings are visited infrequently and need more space.
 // ===========================================================================
 
 /**
- * Command-opened webview panel for configuring WebFlow settings.
+ * Command-opened webview panel for configuring PackAI settings.
  *
  * Uses `createWebviewPanel` (full-tab editor) instead of a sidebar view
  * because settings are visited infrequently and need more space.
@@ -36,8 +36,8 @@ export class SettingsProvider {
     }
 
     this.panel = vscode.window.createWebviewPanel(
-      "webflow.settingsPanel",
-      "WebFlow Settings",
+      "packai.settingsPanel",
+      "PackAI Settings",
       vscode.ViewColumn.One,
       {
         enableScripts: true,
@@ -94,7 +94,7 @@ export class SettingsProvider {
   }
 
   private async updateSetting(key: string, value: unknown): Promise<void> {
-    const config = vscode.workspace.getConfiguration("webflow");
+    const config = vscode.workspace.getConfiguration("packai");
     await config.update(key, value, vscode.ConfigurationTarget.Global);
 
     // Re-read and send updated state
@@ -109,7 +109,7 @@ export class SettingsProvider {
   }
 
   private async resetToDefaults(): Promise<void> {
-    const config = vscode.workspace.getConfiguration("webflow");
+    const config = vscode.workspace.getConfiguration("packai");
     const keys = this.getAllSettingKeys();
     for (const key of keys) {
       await config.update(key, undefined, vscode.ConfigurationTarget.Global);
@@ -118,7 +118,7 @@ export class SettingsProvider {
   }
 
   private async resetSection(section: string): Promise<void> {
-    const config = vscode.workspace.getConfiguration("webflow");
+    const config = vscode.workspace.getConfiguration("packai");
     const sectionDefaults = this.getSectionDefaults(section);
     if (!sectionDefaults) return;
 
@@ -187,13 +187,13 @@ export class SettingsProvider {
   <meta http-equiv="Content-Security-Policy"
     content="default-src 'none'; style-src ${csp}; script-src 'nonce-${nonce}';">
   <link rel="stylesheet" href="${cssUri}">
-  <title>WebFlow Settings</title>
+  <title>PackAI Settings</title>
 </head>
 <body>
 
 <div class="settings-header">
   <div>
-    <h1>WebFlow Settings</h1>
+    <h1>PackAI Settings</h1>
     <div class="subtitle">Configure AI orchestrator behavior</div>
   </div>
 </div>
@@ -386,8 +386,8 @@ export class SettingsProvider {
 
     <div class="setting-row">
       <label for="benchmarkDataPath">Benchmark Data Path</label>
-      <div class="setting-desc">Path to benchmark JSON file. Leave empty for default (.webflow/benchmarks.json).</div>
-      <input type="text" id="benchmarkDataPath" placeholder=".webflow/benchmarks.json">
+      <div class="setting-desc">Path to benchmark JSON file. Leave empty for default (.packai/benchmarks.json).</div>
+      <input type="text" id="benchmarkDataPath" placeholder=".packai/benchmarks.json">
     </div>
   </div>
 

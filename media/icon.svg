@@ -19,6 +19,6 @@
   <text x="128" y="86" text-anchor="middle" fill="#6366f1" font-family="system-ui" font-weight="700" font-size="22">C</text>
   <text x="76" y="174" text-anchor="middle" fill="#6366f1" font-family="system-ui" font-weight="700" font-size="22">P</text>
   <text x="180" y="174" text-anchor="middle" fill="#6366f1" font-family="system-ui" font-weight="700" font-size="22">X</text>
-  <!-- WebFlow label -->
-  <text x="128" y="230" text-anchor="middle" fill="#fff" font-family="system-ui" font-weight="600" font-size="18" opacity="0.9">WebFlow</text>
+  <!-- PackAI label -->
+  <text x="128" y="230" text-anchor="middle" fill="#fff" font-family="system-ui" font-weight="600" font-size="18" opacity="0.9">PackAI</text>
 </svg>

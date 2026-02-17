@@ -1,6 +1,6 @@
 export { SettingsService, DEFAULT_SETTINGS } from "./settingsService";
 export type {
-  WebFlowSettings,
+  PackAISettings,
   AgentPreferencesSettings,
   ApprovalSettings,
   UiSettings,

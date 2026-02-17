@@ -1,16 +1,16 @@
 # User Guide
 
-A step-by-step guide to using the WebFlow AI Orchestrator.
+A step-by-step guide to using the PackAI AI Orchestrator.
 
 ## Getting Started
 
 ### 1. Open a Workspace
 
-WebFlow needs an open folder to work in. Go to **File > Open Folder** and select (or create) your project directory.
+PackAI needs an open folder to work in. Go to **File > Open Folder** and select (or create) your project directory.
 
 ### 2. Start a Project
 
-Open the Command Palette (`Ctrl+Shift+P`) and run **WebFlow: Start Project**, or use the keybinding `Ctrl+Shift+W S`.
+Open the Command Palette (`Ctrl+Shift+P`) and run **PackAI: Start Project**, or use the keybinding `Ctrl+Shift+W S`.
 
 You'll see a quick pick with project types:
 
@@ -26,7 +26,7 @@ If you pick "Custom Project", you'll be asked to type a description like:
 
 ### 3. View the Execution Plan
 
-After selecting a project type, WebFlow will:
+After selecting a project type, PackAI will:
 
 1. Analyze your intent (detect project type, features, complexity)
 2. Generate a multi-phase execution plan
@@ -40,7 +40,7 @@ The dashboard shows phases, tasks, and agent assignments.
 In the VS Code Chat panel, type:
 
 ```
-@webflow /scaffold Build an e-commerce store with Stripe payments and PostgreSQL
+@packai /scaffold Build an e-commerce store with Stripe payments and PostgreSQL
 ```
 
 This runs the full analysis and renders a detailed execution plan in the chat, including:
@@ -55,7 +55,7 @@ This runs the full analysis and renders a detailed execution plan in the chat, i
 ### `/scaffold` -- Generate Project Plan
 
 ```
-@webflow /scaffold Build a real-time dashboard with WebSocket updates
+@packai /scaffold Build a real-time dashboard with WebSocket updates
 ```
 
 Produces a full execution plan. This is the primary command for starting a new project.
@@ -63,7 +63,7 @@ Produces a full execution plan. This is the primary command for starting a new p
 ### `/component` -- Create a Component
 
 ```
-@webflow /component A sortable data table with pagination
+@packai /component A sortable data table with pagination
 ```
 
 *(Coming in Phase 2)* Will generate a complete UI component with the appropriate framework.
@@ -71,7 +71,7 @@ Produces a full execution plan. This is the primary command for starting a new p
 ### `/api` -- Build API Endpoints
 
 ```
-@webflow /api RESTful user management with CRUD operations
+@packai /api RESTful user management with CRUD operations
 ```
 
 *(Coming in Phase 2)* Will generate API route handlers, validation, and tests.
@@ -79,7 +79,7 @@ Produces a full execution plan. This is the primary command for starting a new p
 ### `/test` -- Generate Tests
 
 ```
-@webflow /test Cover the authentication module
+@packai /test Cover the authentication module
 ```
 
 *(Coming in Phase 2)* Will create unit and integration tests for the specified code.
@@ -87,7 +87,7 @@ Produces a full execution plan. This is the primary command for starting a new p
 ### `/review` -- Code Review
 
 ```
-@webflow /review Check the checkout flow for security issues
+@packai /review Check the checkout flow for security issues
 ```
 
 *(Coming in Phase 2)* Will run a multi-agent review with different perspectives.
@@ -95,7 +95,7 @@ Produces a full execution plan. This is the primary command for starting a new p
 ### Freeform Chat
 
 ```
-@webflow How should I structure my Next.js app for SSR?
+@packai How should I structure my Next.js app for SSR?
 ```
 
 Routes to a language model for general web development assistance. Suggests relevant slash commands when appropriate.
@@ -104,25 +104,25 @@ Routes to a language model for general web development assistance. Suggests rele
 
 ### Pause All Sessions
 
-Command Palette: **WebFlow: Pause Orchestration** or `Ctrl+Shift+W P`
+Command Palette: **PackAI: Pause Orchestration** or `Ctrl+Shift+W P`
 
 Pauses all currently running agent sessions. Useful when you want to review intermediate results before continuing.
 
 ### Resume All Sessions
 
-Command Palette: **WebFlow: Resume Orchestration** or `Ctrl+Shift+W R`
+Command Palette: **PackAI: Resume Orchestration** or `Ctrl+Shift+W R`
 
 Resumes all paused sessions from where they left off.
 
 ### Cancel All Sessions
 
-Command Palette: **WebFlow: Cancel Orchestration**
+Command Palette: **PackAI: Cancel Orchestration**
 
 Cancels all active sessions after a confirmation dialog. This cannot be undone.
 
 ### View Session Details
 
-Command Palette: **WebFlow: View Session Details**
+Command Palette: **PackAI: View Session Details**
 
 Shows a quick pick of all sessions with their current state. Selecting one displays full details in the output channel.
 
@@ -141,7 +141,7 @@ Session states:
 
 ### Browse Templates
 
-Command Palette: **WebFlow: Browse Templates** or `Ctrl+Shift+W T`
+Command Palette: **PackAI: Browse Templates** or `Ctrl+Shift+W T`
 
 Lists all available templates (built-in + custom). Selecting one shows:
 
@@ -152,19 +152,19 @@ Lists all available templates (built-in + custom). Selecting one shows:
 
 ### Create a Template from Current Plan
 
-Command Palette: **WebFlow: Create Template from Plan**
+Command Palette: **PackAI: Create Template from Plan**
 
 Saves the current execution plan as a reusable template. You'll be asked for a name and description. If `advanced.customTemplatesDirectory` is set, the template is also saved as a JSON file.
 
 ### Import a Template
 
-Command Palette: **WebFlow: Import Template**
+Command Palette: **PackAI: Import Template**
 
 Opens a file picker for a `.json` template file. The template is validated and registered for immediate use.
 
 ### Export a Template
 
-Command Palette: **WebFlow: Export Template**
+Command Palette: **PackAI: Export Template**
 
 Pick a template from the list and save it as a `.json` file that can be shared or version-controlled.
 
@@ -172,19 +172,19 @@ Pick a template from the list and save it as a `.json` file that can be shared o
 
 ### Quick Configuration
 
-Command Palette: **WebFlow: Configure Agent Preferences**
+Command Palette: **PackAI: Configure Agent Preferences**
 
 Two-step quick pick:
 1. **Selection strategy**: Intelligent, Round Robin, Prefer Claude/Copilot/Codex
 2. **Cost optimization**: Economy, Balanced, Performance
 
-Command Palette: **WebFlow: Configure Approval Rules**
+Command Palette: **PackAI: Configure Approval Rules**
 
 Set trust levels for each agent (minimal, standard, elevated, full). Higher trust means fewer approval prompts.
 
 ### Full Settings Panel
 
-Command Palette: **WebFlow: Open Settings**
+Command Palette: **PackAI: Open Settings**
 
 Opens a full settings panel with all configuration options organized by section.
 
@@ -194,27 +194,27 @@ You can also edit settings directly in `settings.json`:
 
 ```json
 {
-  "webflow.agentPreferences.selectionStrategy": "intelligent",
-  "webflow.agentPreferences.costOptimizationLevel": "balanced",
-  "webflow.agentPreferences.maxParallelSessions": 3,
-  "webflow.approval.agentTrustLevels": {
+  "packai.agentPreferences.selectionStrategy": "intelligent",
+  "packai.agentPreferences.costOptimizationLevel": "balanced",
+  "packai.agentPreferences.maxParallelSessions": 3,
+  "packai.approval.agentTrustLevels": {
     "claude": "elevated",
     "copilot": "standard",
     "codex": "standard"
   },
-  "webflow.approval.devContainerMode": true,
-  "webflow.ui.autoOpenDashboard": true,
-  "webflow.ui.notificationVerbosity": "normal",
-  "webflow.advanced.sessionTimeoutMs": 300000,
-  "webflow.advanced.maxRetries": 3
+  "packai.approval.devContainerMode": true,
+  "packai.ui.autoOpenDashboard": true,
+  "packai.ui.notificationVerbosity": "normal",
+  "packai.advanced.sessionTimeoutMs": 300000,
+  "packai.advanced.maxRetries": 3
 }
 ```
 
 ### Reset to Defaults
 
-Command Palette: **WebFlow: Reset Settings to Defaults**
+Command Palette: **PackAI: Reset Settings to Defaults**
 
-Resets all `webflow.*` settings to their default values after a confirmation dialog.
+Resets all `packai.*` settings to their default values after a confirmation dialog.
 
 ## Settings Reference
 

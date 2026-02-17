@@ -19,7 +19,7 @@ import {
 import { registerAllCommands } from "./commands";
 import type { CommandDeps } from "./commands";
 
-const PARTICIPANT_ID = "webflow-ai.orchestrator";
+const PARTICIPANT_ID = "packai.orchestrator";
 
 let logger: vscode.LogOutputChannel;
 let sessionManager: SessionManager;
@@ -27,11 +27,11 @@ let stateManager: ExecutionStateManager;
 let errorTracker: ErrorFrequencyTracker;
 
 export function activate(context: vscode.ExtensionContext): void {
-  logger = vscode.window.createOutputChannel("WebFlow AI Orchestrator", {
+  logger = vscode.window.createOutputChannel("PackAI AI Orchestrator", {
     log: true,
   });
   context.subscriptions.push(logger);
-  logger.info("WebFlow AI Orchestrator activating...");
+  logger.info("PackAI AI Orchestrator activating...");
 
   // Initialize the session manager
   sessionManager = new SessionManager(
@@ -84,10 +84,10 @@ export function activate(context: vscode.ExtensionContext): void {
 
   // Register dashboard and settings shortcut commands
   context.subscriptions.push(
-    vscode.commands.registerCommand("webflow.openDashboard", () => {
-      void vscode.commands.executeCommand("webflow.dashboardView.focus");
+    vscode.commands.registerCommand("packai.openDashboard", () => {
+      void vscode.commands.executeCommand("packai.dashboardView.focus");
     }),
-    vscode.commands.registerCommand("webflow.openSettings", () => {
+    vscode.commands.registerCommand("packai.openSettings", () => {
       settingsProvider.open();
     })
   );
@@ -101,18 +101,18 @@ export function activate(context: vscode.ExtensionContext): void {
   participant.followupProvider = { provideFollowups };
   context.subscriptions.push(participant);
 
-  logger.info("WebFlow AI Orchestrator activated");
+  logger.info("PackAI AI Orchestrator activated");
 }
 
 export function deactivate(): void {
-  logger?.info("WebFlow AI Orchestrator deactivated");
+  logger?.info("PackAI AI Orchestrator deactivated");
 }
 
 // ---------------------------------------------------------------------------
 // Chat Participant
 // ---------------------------------------------------------------------------
 
-interface WebFlowChatResult extends vscode.ChatResult {
+interface PackAIChatResult extends vscode.ChatResult {
   metadata: {
     command: string;
     agentUsed?: string;
@@ -125,7 +125,7 @@ const handleChatRequest: vscode.ChatRequestHandler = async (
   context,
   stream,
   token
-): Promise<WebFlowChatResult> => {
+): Promise<PackAIChatResult> => {
   const command = request.command ?? "chat";
   logger.info(`Chat request: command=${command}, prompt="${request.prompt}"`);
 
@@ -158,7 +158,7 @@ async function handleScaffold(
   _context: vscode.ChatContext,
   stream: vscode.ChatResponseStream,
   _token: vscode.CancellationToken
-): Promise<WebFlowChatResult> {
+): Promise<PackAIChatResult> {
   stream.progress("Analyzing project requirements...");
 
   const intent = analyzeIntent(request.prompt);
@@ -263,7 +263,7 @@ async function handleComponent(
   _context: vscode.ChatContext,
   stream: vscode.ChatResponseStream,
   _token: vscode.CancellationToken
-): Promise<WebFlowChatResult> {
+): Promise<PackAIChatResult> {
   stream.progress("Preparing component generation...");
   stream.markdown(
     `### Component\nCreating component: **${request.prompt}**\n\n` +
@@ -277,7 +277,7 @@ async function handleApi(
   _context: vscode.ChatContext,
   stream: vscode.ChatResponseStream,
   _token: vscode.CancellationToken
-): Promise<WebFlowChatResult> {
+): Promise<PackAIChatResult> {
   stream.progress("Designing API endpoints...");
   stream.markdown(
     `### API\nBuilding endpoints for: **${request.prompt}**\n\n` +
@@ -291,7 +291,7 @@ async function handleTest(
   _context: vscode.ChatContext,
   stream: vscode.ChatResponseStream,
   _token: vscode.CancellationToken
-): Promise<WebFlowChatResult> {
+): Promise<PackAIChatResult> {
   stream.progress("Setting up test generation...");
   stream.markdown(
     `### Test\nGenerating tests for: **${request.prompt}**\n\n` +
@@ -305,7 +305,7 @@ async function handleReview(
   _context: vscode.ChatContext,
   stream: vscode.ChatResponseStream,
   _token: vscode.CancellationToken
-): Promise<WebFlowChatResult> {
+): Promise<PackAIChatResult> {
   stream.progress("Starting multi-agent review...");
   stream.markdown(
     `### Code Review\nReviewing: **${request.prompt}**\n\n` +
@@ -319,7 +319,7 @@ async function handleFreeform(
   _context: vscode.ChatContext,
   stream: vscode.ChatResponseStream,
   token: vscode.CancellationToken
-): Promise<WebFlowChatResult> {
+): Promise<PackAIChatResult> {
   stream.progress("Selecting optimal agent...");
 
   // Attempt to get a language model and provide a helpful response
@@ -336,7 +336,7 @@ async function handleFreeform(
 
   const messages = [
     vscode.LanguageModelChatMessage.User(
-      "You are WebFlow AI Orchestrator, a multi-agent coordinator for web development. " +
+      "You are PackAI AI Orchestrator, a multi-agent coordinator for web development. " +
         "You help users by routing tasks to the best AI agent (Claude for architecture, " +
         "Copilot for quick edits, Codex for background tasks). " +
         "Keep responses concise. Suggest using slash commands when appropriate: " +
@@ -362,7 +362,7 @@ function provideFollowups(
   _context: vscode.ChatContext,
   _token: vscode.CancellationToken
 ): vscode.ChatFollowup[] {
-  const meta = chatResult.metadata as WebFlowChatResult["metadata"] | undefined;
+  const meta = chatResult.metadata as PackAIChatResult["metadata"] | undefined;
   if (!meta?.nextSteps?.length) {
     return [];
   }
@@ -375,15 +375,15 @@ function provideFollowups(
 
 function result(
   command: string,
-  extra?: Partial<WebFlowChatResult["metadata"]>
-): WebFlowChatResult {
+  extra?: Partial<PackAIChatResult["metadata"]>
+): PackAIChatResult {
   return { metadata: { command, ...extra } };
 }
 
 function handleError(
   err: unknown,
   stream: vscode.ChatResponseStream
-): WebFlowChatResult {
+): PackAIChatResult {
   const normalized = normalizeError(err);
   errorTracker.record(normalized.code);
   logger.error(`[${normalized.code}] ${normalized.message}`);

@@ -2,7 +2,7 @@ import type { AgentRole } from "../intelligence/types";
 import type { ToolType } from "../execution/toolApprover";
 
 // ===========================================================================
-// WebFlow Settings Types
+// PackAI Settings Types
 //
 // Pure type definitions — no VS Code imports. Fully testable with Vitest.
 // ===========================================================================
@@ -79,7 +79,7 @@ export interface UiSettings {
 export interface AdvancedSettings {
   /** Path to custom workflow templates directory. Empty = use built-ins. */
   readonly customTemplatesDirectory: string;
-  /** Path to benchmark data JSON. Empty = default .webflow/benchmarks.json. */
+  /** Path to benchmark data JSON. Empty = default .packai/benchmarks.json. */
   readonly benchmarkDataPath: string;
   /** Session timeout in ms. 0 = no timeout. */
   readonly sessionTimeoutMs: number;
@@ -99,7 +99,7 @@ export interface AdvancedSettings {
 // Root settings shape
 // ---------------------------------------------------------------------------
 
-export interface WebFlowSettings {
+export interface PackAISettings {
   readonly agentPreferences: AgentPreferencesSettings;
   readonly approval: ApprovalSettings;
   readonly ui: UiSettings;

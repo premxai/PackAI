@@ -1,6 +1,6 @@
 // Errors
 export {
-  WebFlowError,
+  PackAIError,
   AgentFailureError,
   AllAgentsExhaustedError,
   RateLimitError,
@@ -8,7 +8,7 @@ export {
   StatePersistenceError,
   ConflictEscalationError,
   isAgentExecutionError,
-  isWebFlowError,
+  isPackAIError,
   normalizeError,
   getUserMessage,
 } from "./errors";

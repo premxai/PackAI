@@ -46,128 +46,128 @@
   "contributes": {
     "commands": [
       {
-        "command": "webflow.startProject",
+        "command": "packai.startProject",
         "title": "Start Project",
-        "category": "WebFlow",
+        "category": "PackAI",
         "icon": "$(rocket)"
       },
       {
-        "command": "webflow.openDashboard",
+        "command": "packai.openDashboard",
         "title": "Open Dashboard",
-        "category": "WebFlow",
+        "category": "PackAI",
         "icon": "$(dashboard)"
       },
       {
-        "command": "webflow.openSettings",
+        "command": "packai.openSettings",
         "title": "Open Settings",
-        "category": "WebFlow",
+        "category": "PackAI",
         "icon": "$(gear)"
       },
       {
-        "command": "webflow.pauseOrchestration",
+        "command": "packai.pauseOrchestration",
         "title": "Pause Orchestration",
-        "category": "WebFlow",
+        "category": "PackAI",
         "icon": "$(debug-pause)",
-        "enablement": "webflow.hasActiveSessions"
+        "enablement": "packai.hasActiveSessions"
       },
       {
-        "command": "webflow.resumeOrchestration",
+        "command": "packai.resumeOrchestration",
         "title": "Resume Orchestration",
-        "category": "WebFlow",
+        "category": "PackAI",
         "icon": "$(debug-continue)",
-        "enablement": "webflow.hasActiveSessions"
+        "enablement": "packai.hasActiveSessions"
       },
       {
-        "command": "webflow.cancelOrchestration",
+        "command": "packai.cancelOrchestration",
         "title": "Cancel Orchestration",
-        "category": "WebFlow",
+        "category": "PackAI",
         "icon": "$(stop-circle)",
-        "enablement": "webflow.hasActiveSessions"
+        "enablement": "packai.hasActiveSessions"
       },
       {
-        "command": "webflow.viewSessionDetails",
+        "command": "packai.viewSessionDetails",
         "title": "View Session Details",
-        "category": "WebFlow",
+        "category": "PackAI",
         "icon": "$(list-unordered)"
       },
       {
-        "command": "webflow.retryTask",
+        "command": "packai.retryTask",
         "title": "Retry Task",
-        "category": "WebFlow",
+        "category": "PackAI",
         "icon": "$(refresh)"
       },
       {
-        "command": "webflow.resolveConflict",
+        "command": "packai.resolveConflict",
         "title": "Resolve Conflict",
-        "category": "WebFlow",
+        "category": "PackAI",
         "icon": "$(git-merge)"
       },
       {
-        "command": "webflow.browseTemplates",
+        "command": "packai.browseTemplates",
         "title": "Browse Templates",
-        "category": "WebFlow",
+        "category": "PackAI",
         "icon": "$(file-code)"
       },
       {
-        "command": "webflow.createTemplate",
+        "command": "packai.createTemplate",
         "title": "Create Template from Plan",
-        "category": "WebFlow",
+        "category": "PackAI",
         "icon": "$(add)"
       },
       {
-        "command": "webflow.importTemplate",
+        "command": "packai.importTemplate",
         "title": "Import Template",
-        "category": "WebFlow",
+        "category": "PackAI",
         "icon": "$(cloud-download)"
       },
       {
-        "command": "webflow.exportTemplate",
+        "command": "packai.exportTemplate",
         "title": "Export Template",
-        "category": "WebFlow",
+        "category": "PackAI",
         "icon": "$(cloud-upload)"
       },
       {
-        "command": "webflow.configureAgents",
+        "command": "packai.configureAgents",
         "title": "Configure Agent Preferences",
-        "category": "WebFlow",
+        "category": "PackAI",
         "icon": "$(settings-gear)"
       },
       {
-        "command": "webflow.configureApproval",
+        "command": "packai.configureApproval",
         "title": "Configure Approval Rules",
-        "category": "WebFlow",
+        "category": "PackAI",
         "icon": "$(shield)"
       },
       {
-        "command": "webflow.resetSettings",
+        "command": "packai.resetSettings",
         "title": "Reset Settings to Defaults",
-        "category": "WebFlow",
+        "category": "PackAI",
         "icon": "$(discard)"
       }
     ],
     "keybindings": [
       {
-        "command": "webflow.startProject",
+        "command": "packai.startProject",
         "key": "ctrl+shift+w s",
         "mac": "cmd+shift+w s"
       },
       {
-        "command": "webflow.openDashboard",
+        "command": "packai.openDashboard",
         "key": "ctrl+shift+w d",
         "mac": "cmd+shift+w d"
       },
       {
-        "command": "webflow.pauseOrchestration",
+        "command": "packai.pauseOrchestration",
         "key": "ctrl+shift+w p",
         "mac": "cmd+shift+w p"
       },
       {
-        "command": "webflow.resumeOrchestration",
+        "command": "packai.resumeOrchestration",
         "key": "ctrl+shift+w r",
         "mac": "cmd+shift+w r"
       },
       {
-        "command": "webflow.browseTemplates",
+        "command": "packai.browseTemplates",
         "key": "ctrl+shift+w t",
         "mac": "cmd+shift+w t"
       }
@@ -175,25 +175,25 @@
     "viewsContainers": {
       "panel": [
         {
-          "id": "webflow-dashboard",
-          "title": "WebFlow",
+          "id": "packai-dashboard",
+          "title": "PackAI",
           "icon": "$(rocket)"
         }
       ]
     },
     "views": {
-      "webflow-dashboard": [
+      "packai-dashboard": [
         {
-          "id": "webflow.dashboardView",
+          "id": "packai.dashboardView",
           "name": "Dashboard",
           "type": "webview"
         }
       ]
     },
     "configuration": {
-      "title": "WebFlow AI Orchestrator",
+      "title": "PackAI",
       "properties": {
-        "webflow.agentPreferences.selectionStrategy": {
+        "packai.agentPreferences.selectionStrategy": {
           "type": "string",
           "default": "intelligent",
           "enum": [
@@ -212,7 +212,7 @@
           ],
           "description": "How the orchestrator selects agents when multiple could handle a task."
         },
-        "webflow.agentPreferences.costOptimizationLevel": {
+        "packai.agentPreferences.costOptimizationLevel": {
           "type": "string",
           "default": "balanced",
           "enum": [
@@ -227,14 +227,14 @@
           ],
           "description": "Cost-vs-quality tradeoff for model selection."
         },
-        "webflow.agentPreferences.maxParallelSessions": {
+        "packai.agentPreferences.maxParallelSessions": {
           "type": "integer",
           "default": 3,
           "minimum": 1,
           "maximum": 10,
           "description": "Maximum number of parallel agent sessions allowed."
         },
-        "webflow.approval.autoApproveTools": {
+        "packai.approval.autoApproveTools": {
           "type": "array",
           "default": [
             "READ",
@@ -253,7 +253,7 @@
           },
           "description": "Tool types to always auto-approve without prompting."
         },
-        "webflow.approval.alwaysDenyTools": {
+        "packai.approval.alwaysDenyTools": {
           "type": "array",
           "default": [
             "DELETE"
@@ -271,7 +271,7 @@
           },
           "description": "Tool types to always require manual confirmation."
         },
-        "webflow.approval.agentTrustLevels": {
+        "packai.approval.agentTrustLevels": {
           "type": "object",
           "default": {
             "claude": "standard",
@@ -312,22 +312,22 @@
           },
           "description": "Per-agent trust level. Higher trust means fewer approval interruptions."
         },
-        "webflow.approval.devContainerMode": {
+        "packai.approval.devContainerMode": {
           "type": "boolean",
           "default": true,
           "description": "Activate permissive approval mode when running in a dev container."
         },
-        "webflow.approval.productionWorkspace": {
+        "packai.approval.productionWorkspace": {
           "type": "boolean",
           "default": false,
           "description": "Mark workspace as production to activate restrictive approval mode."
         },
-        "webflow.ui.autoOpenDashboard": {
+        "packai.ui.autoOpenDashboard": {
           "type": "boolean",
           "default": true,
           "description": "Automatically open the dashboard when a workflow starts."
         },
-        "webflow.ui.notificationVerbosity": {
+        "packai.ui.notificationVerbosity": {
           "type": "string",
           "default": "normal",
           "enum": [
@@ -344,7 +344,7 @@
           ],
           "description": "How chatty the extension is with VS Code notifications."
         },
-        "webflow.ui.dashboardTheme": {
+        "packai.ui.dashboardTheme": {
           "type": "string",
           "default": "auto",
           "enum": [
@@ -359,55 +359,55 @@
           ],
           "description": "Dashboard color theme override."
         },
-        "webflow.ui.activityLogLimit": {
+        "packai.ui.activityLogLimit": {
           "type": "integer",
           "default": 100,
           "minimum": 10,
           "maximum": 500,
           "description": "Maximum number of activity log entries displayed in the dashboard."
         },
-        "webflow.advanced.customTemplatesDirectory": {
+        "packai.advanced.customTemplatesDirectory": {
           "type": "string",
           "default": "",
           "description": "Path to a directory containing custom workflow templates. Leave empty to use built-in templates."
         },
-        "webflow.advanced.benchmarkDataPath": {
+        "packai.advanced.benchmarkDataPath": {
           "type": "string",
           "default": "",
-          "description": "Path to benchmark data JSON file. Leave empty for default (.webflow/benchmarks.json)."
+          "description": "Path to benchmark data JSON file. Leave empty for default (.packai/benchmarks.json)."
         },
-        "webflow.advanced.sessionTimeoutMs": {
+        "packai.advanced.sessionTimeoutMs": {
           "type": "integer",
           "default": 300000,
           "minimum": 0,
           "maximum": 3600000,
           "description": "Session timeout in milliseconds. Set to 0 for no timeout."
         },
-        "webflow.advanced.maxRetries": {
+        "packai.advanced.maxRetries": {
           "type": "integer",
           "default": 3,
           "minimum": 0,
           "maximum": 10,
           "description": "Maximum retry attempts when an agent session fails."
         },
-        "webflow.advanced.retryBaseDelayMs": {
+        "packai.advanced.retryBaseDelayMs": {
           "type": "integer",
           "default": 1000,
           "minimum": 100,
           "maximum": 60000,
           "description": "Base delay in milliseconds between retry attempts (with exponential backoff)."
         },
-        "webflow.advanced.telemetryEnabled": {
+        "packai.advanced.telemetryEnabled": {
           "type": "boolean",
           "default": false,
           "description": "Enable opt-in telemetry to track error types and frequency locally. No code is sent externally."
         },
-        "webflow.advanced.gitCheckpointEnabled": {
+        "packai.advanced.gitCheckpointEnabled": {
           "type": "boolean",
           "default": true,
           "description": "Automatically create a git commit after each completed phase for easy rollback."
         },
-        "webflow.advanced.stateCheckpointIntervalMs": {
+        "packai.advanced.stateCheckpointIntervalMs": {
           "type": "integer",
           "default": 30000,
           "minimum": 5000,
@@ -418,9 +418,9 @@
     },
     "chatParticipants": [
       {
-        "id": "webflow-ai.orchestrator",
-        "name": "webflow",
-        "fullName": "WebFlow AI Orchestrator",
+        "id": "packai.orchestrator",
+        "name": "packai",
+        "fullName": "PackAI Orchestrator",
         "description": "Multi-agent web development coordinator",
         "isSticky": true,
         "commands": [

@@ -1,6 +1,6 @@
 # Example: Landing Page
 
-This example shows how WebFlow generates an execution plan for a landing page project.
+This example shows how PackAI generates an execution plan for a landing page project.
 
 ## Input
 
@@ -8,7 +8,7 @@ This example shows how WebFlow generates an execution plan for a landing page pr
 Create a product landing page with hero section, feature highlights, and pricing table
 ```
 
-## What WebFlow Detects
+## What PackAI Detects
 
 | Field | Value |
 |-------|-------|
@@ -19,7 +19,7 @@ Create a product landing page with hero section, feature highlights, and pricing
 
 ## Generated Plan
 
-WebFlow selects the **Landing Page** template:
+PackAI selects the **Landing Page** template:
 
 ### Phase 1: Setup
 | Task | Agent | Est. |
@@ -45,5 +45,5 @@ WebFlow selects the **Landing Page** template:
 ## How to Run
 
 ```
-@webflow /scaffold Create a product landing page with hero section, feature highlights, and pricing table
+@packai /scaffold Create a product landing page with hero section, feature highlights, and pricing table
 ```

@@ -8,7 +8,7 @@ import type { ExecutionPlan } from "../intelligence/types";
 // ===========================================================================
 // DashboardProvider
 //
-// VS Code WebviewViewProvider for the WebFlow orchestration dashboard.
+// VS Code WebviewViewProvider for the PackAI orchestration dashboard.
 // Subscribes to SessionManager events and posts typed messages to the
 // webview. Handles user actions (pause/resume/cancel/resolve) from the
 // webview.
@@ -25,7 +25,7 @@ import type { ExecutionPlan } from "../intelligence/types";
  * from the webview via the {@link DashboardAction} protocol.
  */
 export class DashboardProvider implements vscode.WebviewViewProvider {
-  public static readonly viewType = "webflow.dashboardView";
+  public static readonly viewType = "packai.dashboardView";
 
   private view: vscode.WebviewView | undefined;
   private readonly disposables: vscode.Disposable[] = [];
@@ -109,11 +109,11 @@ export class DashboardProvider implements vscode.WebviewViewProvider {
   <meta http-equiv="Content-Security-Policy"
     content="default-src 'none'; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
   <link rel="stylesheet" href="${cssUri}">
-  <title>WebFlow Dashboard</title>
+  <title>PackAI Dashboard</title>
 </head>
 <body>
   <header class="dashboard-header">
-    <h1>WebFlow Dashboard</h1>
+    <h1>PackAI Dashboard</h1>
     <div class="header-stats" id="header-stats">
       <span class="stat" id="stat-elapsed">0:00</span>
       <span class="stat" id="stat-remaining">~0 min left</span>
@@ -360,13 +360,13 @@ export class DashboardProvider implements vscode.WebviewViewProvider {
         // Conflict resolution is handled at the orchestration layer
         // Fire a VS Code command that the orchestrator can pick up
         void vscode.commands.executeCommand(
-          "webflow.resolveConflict",
+          "packai.resolveConflict",
           action.payload
         );
         break;
       case "retry-task":
         void vscode.commands.executeCommand(
-          "webflow.retryTask",
+          "packai.retryTask",
           action.payload
         );
         break;

@@ -1,6 +1,6 @@
 # Example: SaaS Dashboard
 
-This example shows how WebFlow generates an execution plan for a SaaS dashboard project.
+This example shows how PackAI generates an execution plan for a SaaS dashboard project.
 
 ## Input
 
@@ -8,7 +8,7 @@ This example shows how WebFlow generates an execution plan for a SaaS dashboard 
 Build a SaaS admin dashboard with user management, analytics charts, and role-based access
 ```
 
-## What WebFlow Detects
+## What PackAI Detects
 
 | Field | Value |
 |-------|-------|
@@ -19,7 +19,7 @@ Build a SaaS admin dashboard with user management, analytics charts, and role-ba
 
 ## Generated Plan
 
-WebFlow selects the **SaaS Dashboard** template:
+PackAI selects the **SaaS Dashboard** template:
 
 ### Phase 1: Foundation
 | Task | Agent | Est. |
@@ -46,5 +46,5 @@ WebFlow selects the **SaaS Dashboard** template:
 ## How to Run
 
 ```
-@webflow /scaffold Build a SaaS admin dashboard with user management, analytics charts, and role-based access
+@packai /scaffold Build a SaaS admin dashboard with user management, analytics charts, and role-based access
 ```

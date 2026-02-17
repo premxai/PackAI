@@ -1,12 +1,12 @@
 import { describe, it, expect } from "vitest";
 import { SettingsService, DEFAULT_SETTINGS } from "./settingsService";
-import type { WebFlowSettings, SettingsValidationError } from "./types";
+import type { PackAISettings, SettingsValidationError } from "./types";
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
-function makeSettings(overrides: Record<string, unknown> = {}): WebFlowSettings {
+function makeSettings(overrides: Record<string, unknown> = {}): PackAISettings {
   const service = new SettingsService();
   return service.resolve(overrides).settings;
 }

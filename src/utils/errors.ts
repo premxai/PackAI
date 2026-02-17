@@ -4,7 +4,7 @@ import type { SessionStatus } from "../orchestration/types";
 import type { OutputConflictType } from "../orchestration/conflictResolver";
 
 // ===========================================================================
-// WebFlow Error Hierarchy
+// PackAI Error Hierarchy
 //
 // Typed Error classes with codes, user-friendly messages, and type guards.
 // No VS Code imports — fully testable with Vitest.
@@ -14,15 +14,15 @@ import type { OutputConflictType } from "../orchestration/conflictResolver";
 // Base error
 // ---------------------------------------------------------------------------
 
-/** Base class for all WebFlow errors. Carries a machine-readable code and
+/** Base class for all PackAI errors. Carries a machine-readable code and
  *  a user-facing message safe for display in the chat stream. */
-export class WebFlowError extends Error {
+export class PackAIError extends Error {
   readonly code: string;
   readonly userMessage: string;
 
   constructor(code: string, message: string, userMessage?: string, cause?: unknown) {
     super(message);
-    this.name = "WebFlowError";
+    this.name = "PackAIError";
     this.code = code;
     this.userMessage = userMessage ?? "Something went wrong. Please try again.";
     this.cause = cause;
@@ -35,7 +35,7 @@ export class WebFlowError extends Error {
 
 /** Wraps the plain-object `AgentExecutionError` thrown by BaseAgent.execute()
  *  into a proper Error class with stack trace and instanceof narrowing. */
-export class AgentFailureError extends WebFlowError {
+export class AgentFailureError extends PackAIError {
   readonly agentCode: AgentExecutionError["code"];
   readonly taskId: string;
   readonly agent: AgentRole;
@@ -77,7 +77,7 @@ export class AgentFailureError extends WebFlowError {
 }
 
 /** Thrown when all fallback agents have been exhausted for a task. */
-export class AllAgentsExhaustedError extends WebFlowError {
+export class AllAgentsExhaustedError extends PackAIError {
   readonly triedAgents: readonly AgentRole[];
   readonly taskId: string;
 
@@ -94,7 +94,7 @@ export class AllAgentsExhaustedError extends WebFlowError {
 }
 
 /** Thrown when rate limiting persists or the queue is at capacity. */
-export class RateLimitError extends WebFlowError {
+export class RateLimitError extends PackAIError {
   readonly queueDepth: number;
 
   constructor(message: string, queueDepth: number = 0) {
@@ -109,7 +109,7 @@ export class RateLimitError extends WebFlowError {
 }
 
 /** Thrown when a git CLI operation fails. */
-export class GitOperationError extends WebFlowError {
+export class GitOperationError extends PackAIError {
   readonly gitCommand: string;
   readonly exitCode: number;
 
@@ -126,7 +126,7 @@ export class GitOperationError extends WebFlowError {
 }
 
 /** Thrown when state checkpoint save/load fails. Non-fatal — logged only. */
-export class StatePersistenceError extends WebFlowError {
+export class StatePersistenceError extends PackAIError {
   constructor(operation: "save" | "load" | "delete", detail: string, cause?: unknown) {
     super(
       "state-persistence",
@@ -139,7 +139,7 @@ export class StatePersistenceError extends WebFlowError {
 }
 
 /** Thrown when a conflict cannot be auto-resolved and needs user input. */
-export class ConflictEscalationError extends WebFlowError {
+export class ConflictEscalationError extends PackAIError {
   readonly conflictId: string;
   readonly conflictType: OutputConflictType;
 
@@ -174,9 +174,9 @@ export function isAgentExecutionError(err: unknown): err is AgentExecutionError 
   );
 }
 
-/** Recognizes any WebFlowError class instance. */
-export function isWebFlowError(err: unknown): err is WebFlowError {
-  return err instanceof WebFlowError;
+/** Recognizes any PackAIError class instance. */
+export function isPackAIError(err: unknown): err is PackAIError {
+  return err instanceof PackAIError;
 }
 
 // ---------------------------------------------------------------------------
@@ -184,22 +184,22 @@ export function isWebFlowError(err: unknown): err is WebFlowError {
 // ---------------------------------------------------------------------------
 
 /**
- * Converts any thrown value into a `WebFlowError`.
+ * Converts any thrown value into a `PackAIError`.
  *
  * - AgentExecutionError plain-objects → AgentFailureError
- * - Existing WebFlowError → passthrough
- * - Native Error → wrapped WebFlowError
- * - Anything else → stringified WebFlowError
+ * - Existing PackAIError → passthrough
+ * - Native Error → wrapped PackAIError
+ * - Anything else → stringified PackAIError
  */
-export function normalizeError(err: unknown): WebFlowError {
-  if (err instanceof WebFlowError) return err;
+export function normalizeError(err: unknown): PackAIError {
+  if (err instanceof PackAIError) return err;
 
   if (isAgentExecutionError(err)) {
     return AgentFailureError.fromPlainObject(err);
   }
 
   if (err instanceof Error) {
-    return new WebFlowError(
+    return new PackAIError(
       "unknown",
       err.message,
       `An unexpected error occurred: ${err.message}`,
@@ -208,12 +208,12 @@ export function normalizeError(err: unknown): WebFlowError {
   }
 
   const message = String(err);
-  return new WebFlowError("unknown", message, `An unexpected error occurred: ${message}`, err);
+  return new PackAIError("unknown", message, `An unexpected error occurred: ${message}`, err);
 }
 
 /**
  * Returns a user-facing message string safe for display.
- * Uses the `userMessage` from WebFlowError or falls back to a generic message.
+ * Uses the `userMessage` from PackAIError or falls back to a generic message.
  */
 export function getUserMessage(err: unknown): string {
   const normalized = normalizeError(err);

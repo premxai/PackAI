@@ -1,6 +1,6 @@
 # Example: E-commerce Store
 
-This example shows how WebFlow generates an execution plan for an e-commerce project.
+This example shows how PackAI generates an execution plan for an e-commerce project.
 
 ## Input
 
@@ -8,7 +8,7 @@ This example shows how WebFlow generates an execution plan for an e-commerce pro
 Build an e-commerce store with Stripe payments and PostgreSQL database
 ```
 
-## What WebFlow Detects
+## What PackAI Detects
 
 | Field | Value |
 |-------|-------|
@@ -19,7 +19,7 @@ Build an e-commerce store with Stripe payments and PostgreSQL database
 
 ## Generated Plan
 
-WebFlow selects the **E-commerce Store** template and produces a 3-phase plan:
+PackAI selects the **E-commerce Store** template and produces a 3-phase plan:
 
 ### Phase 1: Project Setup
 | Task | Agent | Depends On | Est. |
@@ -46,16 +46,16 @@ WebFlow selects the **E-commerce Store** template and produces a 3-phase plan:
 ## How to Run
 
 1. Open an empty folder in VS Code
-2. Run **WebFlow: Start Project** from the Command Palette
+2. Run **PackAI: Start Project** from the Command Palette
 3. Select "E-commerce Store"
 4. View the plan in the dashboard
 
 Or use the chat:
 
 ```
-@webflow /scaffold Build an e-commerce store with Stripe payments and PostgreSQL database
+@packai /scaffold Build an e-commerce store with Stripe payments and PostgreSQL database
 ```
 
 ## Template File
 
-See [ecommerce-template.json](ecommerce-template.json) for the raw template that can be imported via **WebFlow: Import Template**.
+See [ecommerce-template.json](ecommerce-template.json) for the raw template that can be imported via **PackAI: Import Template**.
