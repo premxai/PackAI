@@ -89,11 +89,28 @@ export interface EngineDeps {
 // Engine
 // ---------------------------------------------------------------------------
 
+// Instruction prepended to every task prompt so agents consistently wrap
+// output files in fenced code blocks with a `// filepath` header line.
+const CODE_FORMAT_INSTRUCTION =
+  "IMPORTANT: When generating code files, always wrap each file in a " +
+  "fenced code block with the file path as a comment on the very first line " +
+  "inside the block. Use // for TypeScript/JavaScript/CSS, # for Python/YAML, " +
+  "<!-- --> for HTML. Example:\n" +
+  "```typescript\n" +
+  "// src/components/MyComponent.tsx\n" +
+  "// file contents here\n" +
+  "```\n" +
+  "Generate one code block per file. Do not skip the file path comment.";
+
 export class ExecutionEngine {
   private _state: EngineState = "idle";
   private plan: ExecutionPlan | null = null;
   private readonly taskResults = new Map<string, TaskResult>();
   private startTime = 0;
+
+  // Cross-phase dependency tracking: task IDs that completed or failed
+  private readonly completedTaskIds = new Set<string>();
+  private readonly failedTaskIds = new Set<string>();
 
   // Pause mechanics
   private pauseResolver: (() => void) | null = null;
@@ -206,13 +223,40 @@ export class ExecutionEngine {
   private async executePhases(): Promise<void> {
     const plan = this.plan!;
 
+    // Build the full set of task IDs in this plan (for feature-gate detection)
+    const allPlanTaskIds = new Set(
+      plan.phases.flatMap((p) => p.tasks.map((t) => t.id))
+    );
+
     for (const phase of plan.phases) {
       if ((this._state as EngineState) === "cancelled") break;
+
+      // Pre-skip tasks whose cross-phase deps failed.
+      // If a dep ID isn't in the plan at all (feature-gated out), treat it as
+      // satisfied so the task still runs.
+      for (const task of phase.tasks) {
+        if (task.status !== "pending") continue;
+        const blockedByFailed = task.dependsOn.some(
+          (depId) => allPlanTaskIds.has(depId) && this.failedTaskIds.has(depId)
+        );
+        if (blockedByFailed) {
+          task.status = "skipped";
+          this.deps.logger.info(
+            `[${task.id}] Skipped — cross-phase dep failed`
+          );
+        }
+      }
 
       phase.status = "running";
       this.deps.logger.info(`Phase "${phase.label}" started`);
 
       await this.executePhase(phase);
+
+      // Update cross-phase tracking after the phase finishes
+      for (const task of phase.tasks) {
+        if (task.status === "completed") this.completedTaskIds.add(task.id);
+        if (task.status === "failed") this.failedTaskIds.add(task.id);
+      }
 
       // Determine phase outcome
       const taskStatuses = phase.tasks.map((t) => t.status);
@@ -306,7 +350,14 @@ export class ExecutionEngine {
       // 1. Get context for this task
       const context = this.deps.contextCoordinator.getContextForTask(task);
 
-      // 2. Execute with agent fallback
+      // 2. Enrich the prompt with code-block format instructions so the agent
+      //    consistently outputs files the CodeWriter can extract.
+      const enrichedTask: ExecutionTask = {
+        ...task,
+        prompt: `${CODE_FORMAT_INSTRUCTION}\n\n${task.prompt}`,
+      };
+
+      // 3. Execute with agent fallback
       const onProgress: AgentProgressCallback = (progress) => {
         this.deps.logger.info(
           `[${task.id}] ${progress.stage}: ${progress.message}`
@@ -314,13 +365,13 @@ export class ExecutionEngine {
       };
 
       const result = await this.deps.fallbackCoordinator.executeWithFallback(
-        task,
+        enrichedTask,
         context,
         task.agent,
         onProgress
       );
 
-      // 3. Run quality gates
+      // 4. Run quality gates
       const qualityContext: QualityContext = {
         taskId: task.id,
         agent: task.agent,
@@ -364,10 +415,10 @@ export class ExecutionEngine {
         }
       }
 
-      // 4. Update shared context with agent output
+      // 5. Update shared context with agent output
       this.deps.contextCoordinator.updateFromAgentOutput(finalOutput);
 
-      // 5. Extract code and write to workspace
+      // 6. Extract code and write to workspace
       let codeResult: CodeWriteResult = {
         filesWritten: [],
         filesSkipped: [],
@@ -391,7 +442,7 @@ export class ExecutionEngine {
         );
       }
 
-      // 6. Mark task completed
+      // 7. Mark task completed
       task.status = "completed";
       this.emitStateChange(`Task "${task.label}" completed`);
 
