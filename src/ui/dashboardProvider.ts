@@ -3,7 +3,7 @@ import type { SessionManager } from "../orchestration/sessionManager";
 import type { SessionStatus, SessionProgress } from "../orchestration/types";
 import type { DashboardAction, DashboardMessage } from "./dashboardProtocol";
 import { DashboardStateBuilder } from "./dashboardProtocol";
-import type { ExecutionPlan } from "../intelligence/types";
+import type { AgentRole, ExecutionPlan } from "../intelligence/types";
 
 // ===========================================================================
 // DashboardProvider
@@ -32,6 +32,8 @@ export class DashboardProvider implements vscode.WebviewViewProvider {
   private readonly stateBuilder: DashboardStateBuilder =
     new DashboardStateBuilder();
   private currentPlan: ExecutionPlan | undefined;
+  private _currentMode: "review" | "running" = "running";
+  private _startExecutionResolve: ((plan: ExecutionPlan) => void) | undefined;
 
   constructor(
     private readonly extensionUri: vscode.Uri,
@@ -82,8 +84,23 @@ export class DashboardProvider implements vscode.WebviewViewProvider {
   /** Set the current execution plan (call when a plan starts). */
   setExecutionPlan(plan: ExecutionPlan): void {
     this.currentPlan = plan;
+    this._currentMode = "running";
     this.stateBuilder.setStartTime(Date.now());
     this.postFullState();
+  }
+
+  /**
+   * Show the review board for the given plan.
+   * Suspends until the user clicks "Start Execution" in the dashboard.
+   * Returns the (possibly agent-reassigned) plan.
+   */
+  showReviewMode(plan: ExecutionPlan): Promise<ExecutionPlan> {
+    this.currentPlan = plan;
+    this._currentMode = "review";
+    this.postFullState();
+    return new Promise<ExecutionPlan>((resolve) => {
+      this._startExecutionResolve = resolve;
+    });
   }
 
   // -------------------------------------------------------------------------
@@ -138,6 +155,14 @@ export class DashboardProvider implements vscode.WebviewViewProvider {
           <span class="completed" id="agent-claude-completed">0</span> done
           <span class="failed" id="agent-claude-failed">0</span> failed
         </div>
+        <div class="agent-chat">
+          <div class="chat-messages" id="chat-messages-claude"></div>
+          <div class="chat-input-row">
+            <input id="chat-input-claude" type="text" placeholder="Chat with Claude..."
+                   onkeydown="if(event.key==='Enter')sendChatMessage('claude')" />
+            <button onclick="sendChatMessage('claude')">Send</button>
+          </div>
+        </div>
       </div>
       <div class="agent-card agent-copilot" id="agent-copilot" data-role="copilot">
         <div class="agent-name">Copilot</div>
@@ -146,6 +171,14 @@ export class DashboardProvider implements vscode.WebviewViewProvider {
         <div class="agent-stats">
           <span class="completed" id="agent-copilot-completed">0</span> done
           <span class="failed" id="agent-copilot-failed">0</span> failed
+        </div>
+        <div class="agent-chat">
+          <div class="chat-messages" id="chat-messages-copilot"></div>
+          <div class="chat-input-row">
+            <input id="chat-input-copilot" type="text" placeholder="Chat with Copilot..."
+                   onkeydown="if(event.key==='Enter')sendChatMessage('copilot')" />
+            <button onclick="sendChatMessage('copilot')">Send</button>
+          </div>
         </div>
       </div>
       <div class="agent-card agent-codex" id="agent-codex" data-role="codex">
@@ -156,11 +189,29 @@ export class DashboardProvider implements vscode.WebviewViewProvider {
           <span class="completed" id="agent-codex-completed">0</span> done
           <span class="failed" id="agent-codex-failed">0</span> failed
         </div>
+        <div class="agent-chat">
+          <div class="chat-messages" id="chat-messages-codex"></div>
+          <div class="chat-input-row">
+            <input id="chat-input-codex" type="text" placeholder="Chat with Codex..."
+                   onkeydown="if(event.key==='Enter')sendChatMessage('codex')" />
+            <button onclick="sendChatMessage('codex')">Send</button>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="phases-section">
+  <section id="review-section" class="review-section hidden">
+    <h2>Review Task Assignments</h2>
+    <p class="review-hint">Reassign tasks to different agents before starting execution.</p>
+    <table class="review-table">
+      <thead><tr><th>Task</th><th>Phase</th><th>Agent</th></tr></thead>
+      <tbody id="review-tbody"></tbody>
+    </table>
+    <button class="start-execution-btn" onclick="onStartExecution()">&#9654; Start Execution</button>
+  </section>
+
+  <section class="phases-section" id="phases-section">
     <h2>Phases &amp; Tasks</h2>
     <div id="phases-container"></div>
     <div class="empty-state" id="phases-empty">No execution plan loaded</div>
@@ -370,6 +421,61 @@ export class DashboardProvider implements vscode.WebviewViewProvider {
           action.payload
         );
         break;
+      case "assign-agent": {
+        if (this.currentPlan) {
+          for (const phase of this.currentPlan.phases) {
+            for (const task of phase.tasks) {
+              if (task.id === action.taskId) {
+                task.agent = action.agent;
+              }
+            }
+          }
+          this.postFullState();
+        }
+        break;
+      }
+      case "start-execution": {
+        if (this.currentPlan) {
+          const plan = this.currentPlan;
+          this._startExecutionResolve?.(plan);
+          this._startExecutionResolve = undefined;
+        }
+        break;
+      }
+      case "agent-chat-message": {
+        void this.handleAgentChat(action.agent, action.message);
+        break;
+      }
+    }
+  }
+
+  private async handleAgentChat(agent: AgentRole, message: string): Promise<void> {
+    const families: Record<AgentRole, string> = {
+      claude: "claude-3.5-sonnet",
+      copilot: "gpt-4o",
+      codex: "o3-mini",
+    };
+    const models = await vscode.lm.selectChatModels({ vendor: "copilot", family: families[agent] });
+    const model = models[0];
+    if (!model) {
+      this.postDirectMessage({ type: "agent-chat-error", agent, error: "Model unavailable" });
+      return;
+    }
+    const cts = new vscode.CancellationTokenSource();
+    try {
+      const response = await model.sendRequest(
+        [vscode.LanguageModelChatMessage.User(message)],
+        {},
+        cts.token
+      );
+      for await (const token of response.text) {
+        this.postDirectMessage({ type: "agent-chat-token", agent, token });
+      }
+      this.postDirectMessage({ type: "agent-chat-done", agent });
+    } catch (e) {
+      this.postDirectMessage({ type: "agent-chat-error", agent, error: String(e) });
+    } finally {
+      cts.dispose();
     }
   }
 
@@ -381,9 +487,14 @@ export class DashboardProvider implements vscode.WebviewViewProvider {
     if (!this.view || !this.currentPlan) return;
     const msg: DashboardMessage = {
       type: "init",
-      payload: this.stateBuilder.buildState(this.currentPlan),
+      payload: this.stateBuilder.buildState(this.currentPlan, this._currentMode),
     };
     void this.view.webview.postMessage(msg);
+  }
+
+  private postDirectMessage(message: DashboardMessage): void {
+    if (!this.view) return;
+    void this.view.webview.postMessage(message);
   }
 
   private postMessage(

@@ -424,3 +424,152 @@ section {
   padding: 16px;
   font-size: 12px;
 }
+
+/* ---------------------------------------------------------------------------
+   Review Board
+   --------------------------------------------------------------------------- */
+
+.review-section {
+  padding: 0 0 12px;
+}
+
+.review-hint {
+  font-size: 11px;
+  opacity: 0.7;
+  margin: 4px 0 8px;
+}
+
+.review-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 10px;
+  font-size: 12px;
+}
+
+.review-table th,
+.review-table td {
+  padding: 5px 10px;
+  border-bottom: 1px solid var(--vscode-panel-border, rgba(128,128,128,0.2));
+  text-align: left;
+}
+
+.review-table th {
+  font-weight: 600;
+  opacity: 0.7;
+  font-size: 11px;
+}
+
+.agent-select {
+  background: var(--vscode-dropdown-background, var(--vscode-editor-background));
+  color: var(--vscode-dropdown-foreground, var(--vscode-foreground));
+  border: 1px solid var(--vscode-dropdown-border, rgba(128,128,128,0.3));
+  border-radius: 3px;
+  padding: 2px 6px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.start-execution-btn {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  margin-top: 4px;
+  background: var(--vscode-button-background, #0078d4);
+  color: var(--vscode-button-foreground, #fff);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.start-execution-btn:hover {
+  background: var(--vscode-button-hoverBackground, #005a9e);
+}
+
+/* ---------------------------------------------------------------------------
+   Agent Chat
+   --------------------------------------------------------------------------- */
+
+.agent-chat {
+  margin-top: 8px;
+  border-top: 1px solid var(--vscode-panel-border, rgba(128,128,128,0.15));
+  padding-top: 6px;
+}
+
+.chat-messages {
+  max-height: 130px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 4px;
+}
+
+.chat-bubble {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  max-width: 90%;
+  word-break: break-word;
+}
+
+.chat-bubble.user {
+  align-self: flex-end;
+  background: var(--vscode-button-background, #0078d4);
+  color: var(--vscode-button-foreground, #fff);
+}
+
+.chat-bubble.agent-msg {
+  align-self: flex-start;
+  background: var(--vscode-editor-inactiveSelectionBackground, rgba(128,128,128,0.1));
+}
+
+.chat-bubble.streaming {
+  opacity: 0.75;
+}
+
+.chat-input-row {
+  display: flex;
+  gap: 4px;
+  padding-top: 4px;
+}
+
+.chat-input-row input {
+  flex: 1;
+  min-width: 0;
+  background: var(--vscode-input-background);
+  color: var(--vscode-input-foreground);
+  border: 1px solid var(--vscode-input-border, rgba(128,128,128,0.3));
+  border-radius: 3px;
+  padding: 3px 6px;
+  font-size: 11px;
+}
+
+.chat-input-row input:focus {
+  outline: none;
+  border-color: var(--vscode-focusBorder, #0078d4);
+}
+
+.chat-input-row button {
+  padding: 3px 8px;
+  background: var(--vscode-button-background, #0078d4);
+  color: var(--vscode-button-foreground, #fff);
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+.chat-input-row button:hover {
+  background: var(--vscode-button-hoverBackground, #005a9e);
+}
+
+/* ---------------------------------------------------------------------------
+   Utility
+   --------------------------------------------------------------------------- */
+
+.hidden {
+  display: none !important;
+}

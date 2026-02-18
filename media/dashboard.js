@@ -13,8 +13,9 @@
 
   const vscode = acquireVsCodeApi();
 
-  /** @type {{ phases: any[], agents: any[], activities: any[], conflicts: any[], stats: any }} */
+  /** @type {{ mode: string, phases: any[], agents: any[], activities: any[], conflicts: any[], stats: any }} */
   let state = {
+    mode: "running",
     phases: [],
     agents: [
       { role: "claude", status: "idle", tasksCompleted: 0, tasksFailed: 0 },
@@ -26,6 +27,9 @@
     stats: { totalTasks: 0, completedTasks: 0, failedTasks: 0, runningTasks: 0, estimatedMinutesRemaining: 0, elapsedMs: 0 },
   };
 
+  /** @type {{ claude: HTMLElement|null, copilot: HTMLElement|null, codex: HTMLElement|null }} */
+  const _streamBubble = { claude: null, copilot: null, codex: null };
+
   // -------------------------------------------------------------------------
   // Message handler
   // -------------------------------------------------------------------------
@@ -36,6 +40,15 @@
       case "init":
         state = msg.payload;
         renderAll();
+        break;
+      case "agent-chat-token":
+        _onChatToken(msg.agent, msg.token);
+        break;
+      case "agent-chat-done":
+        _onChatDone(msg.agent);
+        break;
+      case "agent-chat-error":
+        _onChatError(msg.agent, msg.error);
         break;
       case "phase-update":
         updatePhaseInState(msg.payload);
@@ -119,6 +132,78 @@
     renderPhases();
     renderConflicts();
     renderActivities();
+    applyMode(state.mode || "running");
+  }
+
+  // -------------------------------------------------------------------------
+  // Mode switching
+  // -------------------------------------------------------------------------
+
+  function applyMode(mode) {
+    const reviewSection = document.getElementById("review-section");
+    const phasesSection = document.getElementById("phases-section");
+    if (reviewSection) reviewSection.classList.toggle("hidden", mode !== "review");
+    if (phasesSection) phasesSection.classList.toggle("hidden", mode === "review");
+    if (mode === "review") renderReviewBoard();
+  }
+
+  function renderReviewBoard() {
+    const tbody = document.getElementById("review-tbody");
+    if (!tbody) return;
+    tbody.innerHTML = "";
+    for (const phase of state.phases) {
+      for (const task of phase.tasks) {
+        const row = document.createElement("tr");
+        row.innerHTML =
+          `<td>${esc(task.label)}</td>` +
+          `<td>${esc(phase.label)}</td>` +
+          `<td><select class="agent-select" onchange="onAssignAgent('${esc(task.id)}', this.value)">` +
+          `<option value="claude"${task.agent === "claude" ? " selected" : ""}>Claude</option>` +
+          `<option value="copilot"${task.agent === "copilot" ? " selected" : ""}>Copilot</option>` +
+          `<option value="codex"${task.agent === "codex" ? " selected" : ""}>Codex</option>` +
+          `</select></td>`;
+        tbody.appendChild(row);
+      }
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // Chat helpers (private)
+  // -------------------------------------------------------------------------
+
+  function _appendBubble(agent, text, who) {
+    const box = document.getElementById("chat-messages-" + agent);
+    if (!box) return null;
+    const b = document.createElement("div");
+    b.className = "chat-bubble " + (who === "user" ? "user" : "agent-msg");
+    b.textContent = text;
+    box.appendChild(b);
+    box.scrollTop = box.scrollHeight;
+    return b;
+  }
+
+  function _onChatToken(agent, token) {
+    if (!_streamBubble[agent]) {
+      _streamBubble[agent] = _appendBubble(agent, "", "agent");
+      if (_streamBubble[agent]) _streamBubble[agent].classList.add("streaming");
+    }
+    if (_streamBubble[agent]) {
+      _streamBubble[agent].textContent += token;
+      const box = document.getElementById("chat-messages-" + agent);
+      if (box) box.scrollTop = box.scrollHeight;
+    }
+  }
+
+  function _onChatDone(agent) {
+    if (_streamBubble[agent]) {
+      _streamBubble[agent].classList.remove("streaming");
+      _streamBubble[agent] = null;
+    }
+  }
+
+  function _onChatError(agent, error) {
+    _streamBubble[agent] = null;
+    _appendBubble(agent, "\u26A0 " + error, "agent");
   }
 
   function renderStats() {
@@ -303,6 +388,23 @@
       type: "resolve-conflict",
       payload: { conflictId: conflictId, strategy: strategy },
     });
+  };
+
+  window.onAssignAgent = function (taskId, agent) {
+    vscode.postMessage({ type: "assign-agent", taskId: taskId, agent: agent });
+  };
+
+  window.onStartExecution = function () {
+    vscode.postMessage({ type: "start-execution" });
+  };
+
+  window.sendChatMessage = function (agent) {
+    const input = document.getElementById("chat-input-" + agent);
+    const text = (input ? input.value : "").trim();
+    if (!text) return;
+    _appendBubble(agent, text, "user");
+    vscode.postMessage({ type: "agent-chat-message", agent: agent, message: text });
+    if (input) input.value = "";
   };
 
   window.togglePhase = function (headerEl) {

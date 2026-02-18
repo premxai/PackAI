@@ -24,7 +24,10 @@ export type DashboardMessage =
   | { readonly type: "activity"; readonly payload: ActivityEntry }
   | { readonly type: "conflict"; readonly payload: ConflictSnapshot }
   | { readonly type: "conflict-resolved"; readonly payload: { readonly conflictId: string } }
-  | { readonly type: "stats"; readonly payload: StatsSnapshot };
+  | { readonly type: "stats"; readonly payload: StatsSnapshot }
+  | { readonly type: "agent-chat-token"; readonly agent: AgentRole; readonly token: string }
+  | { readonly type: "agent-chat-done"; readonly agent: AgentRole }
+  | { readonly type: "agent-chat-error"; readonly agent: AgentRole; readonly error: string };
 
 // ---------------------------------------------------------------------------
 // Webview → Extension messages
@@ -43,7 +46,10 @@ export type DashboardAction =
       };
     }
   | { readonly type: "retry-task"; readonly payload: { readonly taskId: string } }
-  | { readonly type: "request-state" };
+  | { readonly type: "request-state" }
+  | { readonly type: "assign-agent"; readonly taskId: string; readonly agent: AgentRole }
+  | { readonly type: "start-execution" }
+  | { readonly type: "agent-chat-message"; readonly agent: AgentRole; readonly message: string };
 
 // ---------------------------------------------------------------------------
 // Snapshot types
@@ -51,6 +57,7 @@ export type DashboardAction =
 
 /** Full dashboard state sent on init and request-state. */
 export interface DashboardState {
+  readonly mode: "review" | "running";
   readonly phases: readonly PhaseSnapshot[];
   readonly agents: readonly AgentSnapshot[];
   readonly activities: readonly ActivityEntry[];
@@ -327,8 +334,9 @@ export class DashboardStateBuilder {
   }
 
   /** Build the full dashboard state. */
-  buildState(plan: ExecutionPlan): DashboardState {
+  buildState(plan: ExecutionPlan, mode: "review" | "running" = "running"): DashboardState {
     return {
+      mode,
       phases: this.buildPhaseSnapshots(plan),
       agents: this.buildAgentSnapshots(),
       activities: this.getActivities(),

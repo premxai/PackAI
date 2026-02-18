@@ -171,7 +171,8 @@ export interface WorkflowTemplate {
 // ExecutionPlan — a concrete, customized plan ready to execute
 // ---------------------------------------------------------------------------
 
-export interface ExecutionTask extends TaskDefinition {
+export interface ExecutionTask extends Omit<TaskDefinition, "agent"> {
+  agent: AgentRole; // writable — user can reassign from review board
   status: TaskStatus;
 }
 
