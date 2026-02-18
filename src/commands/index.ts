@@ -4,6 +4,7 @@ import type { DashboardProvider } from "../ui/dashboardProvider";
 import type { VsCodeSettingsAdapter } from "../settings/vscodeSettingsAdapter";
 import type { ExecutionStateManager } from "../utils/errorRecovery";
 import type { ExecutionPlan } from "../intelligence/types";
+import type { ExecutionEngine } from "../orchestration/executionEngine";
 import { registerStartProjectCommand } from "./startProject";
 import { registerOrchestrationCommands } from "./manageOrchestration";
 import { registerTemplateCommands } from "./templates";
@@ -25,6 +26,8 @@ export interface CommandDeps {
   readonly logger: vscode.LogOutputChannel;
   /** Mutable reference so commands can read/write the current plan. */
   currentPlan: ExecutionPlan | null;
+  /** The running execution engine (null until a project starts). */
+  executionEngine: ExecutionEngine | null;
 }
 
 /** Register all PackAI commands on the extension context. */

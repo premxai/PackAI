@@ -52,6 +52,18 @@ export type {
   DiffLine,
   ConflictDiffView,
 } from "./conflictResolver";
+export { ExecutionEngine } from "./executionEngine";
+export type {
+  EngineState,
+  EngineEvent,
+  TaskResult,
+  ExecutionSummary,
+  EngineConfig,
+  EngineDeps,
+} from "./executionEngine";
+export { CodeWriter } from "./codeWriter";
+export type { ExtractedFile, CodeWriteResult, IFileWriter } from "./codeWriter";
+export { VsCodeFileWriter } from "./vscodeFileWriter";
 export type {
   SessionId,
   SessionState,

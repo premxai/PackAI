@@ -49,7 +49,13 @@ async function pauseOrchestration(deps: CommandDeps): Promise<void> {
       .getActiveSessions()
       .filter((s) => s.state === "running");
 
-    if (active.length === 0) {
+    // Pause the engine (stops dispatching new batches)
+    if (deps.executionEngine) {
+      deps.executionEngine.pause();
+      logger.info("Execution engine paused");
+    }
+
+    if (active.length === 0 && !deps.executionEngine) {
       void vscode.window.showInformationMessage("PackAI: No running sessions to pause.");
       return;
     }
@@ -60,7 +66,7 @@ async function pauseOrchestration(deps: CommandDeps): Promise<void> {
 
     logger.info(`Paused ${active.length} session(s)`);
     void vscode.window.showInformationMessage(
-      `PackAI: Paused ${active.length} session(s).`
+      `PackAI: Paused${active.length > 0 ? ` ${active.length} session(s)` : ""}.`
     );
   } catch (err) {
     handleCommandError("pauseOrchestration", err, deps);
@@ -79,7 +85,13 @@ async function resumeOrchestration(deps: CommandDeps): Promise<void> {
       .getActiveSessions()
       .filter((s) => s.state === "paused");
 
-    if (paused.length === 0) {
+    // Resume the engine (continues dispatching batches)
+    if (deps.executionEngine) {
+      deps.executionEngine.resume();
+      logger.info("Execution engine resumed");
+    }
+
+    if (paused.length === 0 && !deps.executionEngine) {
       void vscode.window.showInformationMessage("PackAI: No paused sessions to resume.");
       return;
     }
@@ -90,7 +102,7 @@ async function resumeOrchestration(deps: CommandDeps): Promise<void> {
 
     logger.info(`Resumed ${paused.length} session(s)`);
     void vscode.window.showInformationMessage(
-      `PackAI: Resumed ${paused.length} session(s).`
+      `PackAI: Resumed${paused.length > 0 ? ` ${paused.length} session(s)` : ""}.`
     );
   } catch (err) {
     handleCommandError("resumeOrchestration", err, deps);
@@ -120,13 +132,19 @@ async function cancelOrchestration(deps: CommandDeps): Promise<void> {
 
     if (confirm !== "Cancel All") return;
 
+    // Cancel the engine first (stops launching new tasks)
+    if (deps.executionEngine) {
+      deps.executionEngine.cancel();
+      logger.info("Execution engine cancelled");
+    }
+
     for (const session of active) {
       await sessionManager.cancelSession(session.sessionId);
     }
 
     logger.info(`Cancelled ${active.length} session(s)`);
     void vscode.window.showInformationMessage(
-      `PackAI: Cancelled ${active.length} session(s).`
+      `PackAI: Cancelled orchestration.`
     );
   } catch (err) {
     handleCommandError("cancelOrchestration", err, deps);

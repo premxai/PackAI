@@ -79,6 +79,7 @@ export function activate(context: vscode.ExtensionContext): void {
     stateManager,
     logger,
     currentPlan: null,
+    executionEngine: null,
   };
   registerAllCommands(context, commandDeps);
 

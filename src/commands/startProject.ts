@@ -3,6 +3,17 @@ import { analyzeIntent, WorkflowGenerator, AgentSelector } from "../intelligence
 import type { AgentRole } from "../intelligence/types";
 import type { CommandDeps } from "./index";
 import { normalizeError, getUserMessage } from "../utils";
+import { ExecutionEngine } from "../orchestration/executionEngine";
+import { AgentFactory } from "../execution/agents/agentFactory";
+import {
+  DependencyResolver,
+  ContextCoordinator,
+  VsCodeEventEmitterFactory,
+} from "../orchestration";
+import { QualityGateRunner } from "../execution/qualityGates";
+import { CodeWriter } from "../orchestration/codeWriter";
+import { VsCodeFileWriter } from "../orchestration/vscodeFileWriter";
+import { AgentFallbackCoordinator } from "../utils/errorRecovery";
 
 // ===========================================================================
 // Start Project Command
@@ -105,7 +116,7 @@ async function startProject(deps: CommandDeps): Promise<void> {
         deps.currentPlan = plan;
         dashboardProvider.setExecutionPlan(plan);
 
-        progress.report({ message: "Done!", increment: 20 });
+        progress.report({ message: "Launching execution...", increment: 10 });
 
         // 5. Auto-open dashboard
         const settings = settingsAdapter.getSettings();
@@ -113,10 +124,62 @@ async function startProject(deps: CommandDeps): Promise<void> {
           await vscode.commands.executeCommand("packai.dashboardView.focus");
         }
 
-        void vscode.window.showInformationMessage(
-          `PackAI: Plan ready — ${plan.stats.totalTasks} tasks across ${plan.phases.length} phases. ` +
-            `Use @packai /scaffold in chat for details.`
+        // 6. Create and launch execution engine
+        const workspaceRoot = root.uri.fsPath;
+        const agentFactory = new AgentFactory(deps.sessionManager);
+        const engine = new ExecutionEngine(
+          {
+            workspaceRoot,
+            maxQualityRetries: settings.advanced.maxRetries,
+            continueOnTaskFailure: true,
+            enableCheckpoints: settings.advanced.gitCheckpointEnabled,
+          },
+          {
+            agentFactory,
+            dependencyResolver: new DependencyResolver(),
+            contextCoordinator: new ContextCoordinator(),
+            qualityGateRunner: new QualityGateRunner(),
+            codeWriter: new CodeWriter(new VsCodeFileWriter()),
+            stateManager: deps.stateManager,
+            fallbackCoordinator: new AgentFallbackCoordinator(agentFactory),
+            emitterFactory: new VsCodeEventEmitterFactory(),
+            logger: { info: (m) => logger.info(m), error: (m) => logger.error(m) },
+          }
         );
+
+        deps.executionEngine = engine;
+
+        // Wire engine phase events to dashboard refresh
+        engine.onPhaseComplete.event(({ phaseId, status }) => {
+          const phase = plan.phases.find((p) => p.id === phaseId);
+          if (phase) phase.status = status;
+          dashboardProvider.setExecutionPlan(plan);
+        });
+
+        progress.report({ message: "Done!", increment: 10 });
+
+        void vscode.window.showInformationMessage(
+          `PackAI: Executing ${plan.stats.totalTasks} tasks across ${plan.phases.length} phases...`
+        );
+
+        // Fire-and-forget — execution runs in background, dashboard shows progress
+        engine.execute(plan).then((summary) => {
+          logger.info(
+            `Execution complete: ${summary.tasksCompleted} succeeded, ` +
+              `${summary.tasksFailed} failed, ${summary.tasksSkipped} skipped`
+          );
+          void vscode.window.showInformationMessage(
+            `PackAI: Done — ${summary.tasksCompleted}/${summary.taskResults.length} tasks succeeded. ` +
+              `${summary.filesWritten.length} files written.`
+          );
+          deps.executionEngine = null;
+        }).catch((err) => {
+          logger.error(`Execution error: ${normalizeError(err).message}`);
+          void vscode.window.showErrorMessage(
+            `PackAI: Execution failed. Check the output log for details.`
+          );
+          deps.executionEngine = null;
+        });
       }
     );
   } catch (err) {
