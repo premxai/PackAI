@@ -20,9 +20,20 @@ import { Session } from "./session";
 // access is behind injected interfaces for testability.
 // ===========================================================================
 
-/** Default mapping from agent roles to language model vendor/family. */
+/**
+ * Default mapping from agent roles to language model vendor/family.
+ *
+ * Family names must match what VS Code's Language Model API reports for the
+ * GitHub Copilot vendor. Correct Copilot family names (2025):
+ *   gpt-4o            — GPT-4o via Copilot (always available)
+ *   claude-3.5-sonnet — Claude 3.5 Sonnet via Copilot (requires Claude access)
+ *   o3-mini           — o3-mini via Copilot
+ *
+ * NOTE: "claude-sonnet-4.5" is the Anthropic API model ID — it does NOT work
+ * here. VS Code Copilot calls it "claude-3.5-sonnet".
+ */
 const DEFAULT_AGENT_MODEL_CONFIG: AgentModelConfig = {
-  claude: { vendor: "copilot", family: "claude-sonnet-4.5" },
+  claude: { vendor: "copilot", family: "claude-3.5-sonnet" },
   copilot: { vendor: "copilot", family: "gpt-4o" },
   codex: { vendor: "copilot", family: "o3-mini" },
 };

@@ -86,6 +86,15 @@ export class AgentFallbackCoordinator {
           // Retryable codes: try next agent
           continue;
         }
+        // "No language model available" is thrown as a plain Error by
+        // SessionManager when vscode.lm.selectChatModels() returns [].
+        // Treat it as retryable so the next agent in the fallback chain is tried.
+        if (
+          err instanceof Error &&
+          err.message.startsWith("No language model available")
+        ) {
+          continue;
+        }
         // Unknown error — don't retry, just throw
         throw err;
       }
