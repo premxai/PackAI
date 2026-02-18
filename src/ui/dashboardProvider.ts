@@ -70,6 +70,13 @@ export class DashboardProvider implements vscode.WebviewViewProvider {
       })
     );
 
+    // If a plan was already set before this view was opened (race condition
+    // where showReviewMode was called before the panel finished loading),
+    // push state once the webview script has had time to initialise.
+    if (this.currentPlan) {
+      setTimeout(() => this.postFullState(), 150);
+    }
+
     // Cleanup on dispose
     webviewView.onDidDispose(() => {
       for (const d of this.disposables) d.dispose();
@@ -81,11 +88,14 @@ export class DashboardProvider implements vscode.WebviewViewProvider {
   // Public API for extension.ts
   // -------------------------------------------------------------------------
 
-  /** Set the current execution plan (call when a plan starts). */
+  /** Update the current execution plan and refresh the dashboard. */
   setExecutionPlan(plan: ExecutionPlan): void {
     this.currentPlan = plan;
-    this._currentMode = "running";
-    this.stateBuilder.setStartTime(Date.now());
+    if (this._currentMode !== "running") {
+      // Only reset start time when transitioning to running for the first time
+      this._currentMode = "running";
+      this.stateBuilder.setStartTime(Date.now());
+    }
     this.postFullState();
   }
 
@@ -437,6 +447,9 @@ export class DashboardProvider implements vscode.WebviewViewProvider {
       case "start-execution": {
         if (this.currentPlan) {
           const plan = this.currentPlan;
+          this._currentMode = "running";
+          this.stateBuilder.setStartTime(Date.now());
+          this.postFullState(); // switch UI to running mode immediately
           this._startExecutionResolve?.(plan);
           this._startExecutionResolve = undefined;
         }

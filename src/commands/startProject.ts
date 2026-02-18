@@ -135,12 +135,8 @@ async function startProject(deps: CommandDeps): Promise<void> {
   // Phase B: Review board — user can reassign agents, then clicks Start
   // -------------------------------------------------------------------------
 
-  const settings = settingsAdapter.getSettings();
-
-  // Auto-open the dashboard so the review board is visible
-  if (settings.ui.autoOpenDashboard) {
-    await vscode.commands.executeCommand("packai.dashboardView.focus");
-  }
+  // Always open the dashboard — user must see it to review assignments and start
+  await vscode.commands.executeCommand("packai.dashboardView.focus");
 
   // showReviewMode suspends here until the user clicks "Start Execution"
   const reviewedPlan = await dashboardProvider.showReviewMode(generatedPlan);
@@ -151,6 +147,7 @@ async function startProject(deps: CommandDeps): Promise<void> {
   // -------------------------------------------------------------------------
 
   try {
+    const settings = settingsAdapter.getSettings();
     const workspaceRoot = root.uri.fsPath;
     const agentFactory = new AgentFactory(deps.sessionManager);
     const engine = new ExecutionEngine(
