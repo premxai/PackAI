@@ -33,6 +33,7 @@ export class VsCodeSettingsAdapter implements ISettingsProvider {
     raw["agentPreferences.selectionStrategy"] = config.get("agentPreferences.selectionStrategy");
     raw["agentPreferences.costOptimizationLevel"] = config.get("agentPreferences.costOptimizationLevel");
     raw["agentPreferences.maxParallelSessions"] = config.get("agentPreferences.maxParallelSessions");
+    raw["agentPreferences.apiKeys"] = config.get("agentPreferences.apiKeys");
 
     // Approval
     raw["approval.autoApproveTools"] = config.get("approval.autoApproveTools");

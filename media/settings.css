@@ -217,6 +217,27 @@ body {
   max-width: 160px;
 }
 
+/* Agent API key grid */
+.api-key-grid {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 8px 12px;
+  align-items: center;
+  margin-top: 6px;
+}
+
+.api-key-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.api-key-row input[type="password"] {
+  min-width: 260px;
+  max-width: 420px;
+}
+
 /* ---------------------------------------------------------------------------
    Footer
    --------------------------------------------------------------------------- */

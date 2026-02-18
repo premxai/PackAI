@@ -151,6 +151,7 @@ async function resetSettings(deps: CommandDeps): Promise<void> {
       "agentPreferences.selectionStrategy",
       "agentPreferences.costOptimizationLevel",
       "agentPreferences.maxParallelSessions",
+      "agentPreferences.apiKeys",
       "approval.autoApproveTools",
       "approval.alwaysDenyTools",
       "approval.agentTrustLevels",

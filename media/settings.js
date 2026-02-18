@@ -16,6 +16,11 @@
 
   const TOOL_TYPES = ["READ", "CREATE", "EDIT", "DELETE", "TERMINAL", "WEB_SEARCH"];
   const AGENTS = ["claude", "copilot", "codex"];
+  const API_KEY_URLS = {
+    claude: "https://console.anthropic.com/settings/keys",
+    copilot: "https://github.com/settings/personal-access-tokens",
+    codex: "https://platform.openai.com/api-keys",
+  };
 
   // -----------------------------------------------------------------------
   // Message handler
@@ -49,6 +54,15 @@
     if (target.classList.contains("tab-btn")) {
       const tabId = target.getAttribute("data-tab");
       if (tabId) switchTab(tabId);
+      return;
+    }
+    if (target.classList.contains("get-api-key-btn")) {
+      const agent = target.getAttribute("data-agent");
+      if (!agent || !(agent in API_KEY_URLS)) return;
+      vscode.postMessage({
+        type: "open-external",
+        payload: { url: API_KEY_URLS[/** @type {"claude"|"copilot"|"codex"} */ (agent)] },
+      });
     }
   });
 
@@ -76,6 +90,9 @@
     setSelect("selectionStrategy", s.agentPreferences.selectionStrategy);
     setSelect("costOptimizationLevel", s.agentPreferences.costOptimizationLevel);
     setNumber("maxParallelSessions", s.agentPreferences.maxParallelSessions);
+    setText("apiKey-claude", s.agentPreferences.apiKeys.claude);
+    setText("apiKey-copilot", s.agentPreferences.apiKeys.copilot);
+    setText("apiKey-codex", s.agentPreferences.apiKeys.codex);
 
     // Approval
     setToolCheckboxes("autoApprove", s.approval.autoApproveTools);
@@ -119,6 +136,11 @@
         selectionStrategy: getSelect("selectionStrategy"),
         costOptimizationLevel: getSelect("costOptimizationLevel"),
         maxParallelSessions: getNumber("maxParallelSessions"),
+        apiKeys: {
+          claude: getText("apiKey-claude"),
+          copilot: getText("apiKey-copilot"),
+          codex: getText("apiKey-codex"),
+        },
       },
       approval: {
         autoApproveTools: getToolCheckboxes("autoApprove"),
@@ -191,8 +213,9 @@
         value !== null &&
         typeof value === "object" &&
         !Array.isArray(value) &&
-        // Don't recurse into agentTrustLevels — it's a leaf
-        key !== "agentTrustLevels"
+        // Don't recurse into object leaves that map to single config keys.
+        key !== "agentTrustLevels" &&
+        key !== "apiKeys"
       ) {
         Object.assign(result, flattenSettings(/** @type {Record<string, unknown>} */ (value), fullKey));
       } else {

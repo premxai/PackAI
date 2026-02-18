@@ -15,7 +15,31 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(git remote add:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(dir:*)",
+      "Bash(cmd /c:*)",
+      "Bash(git -C \"C:/Users/kanap/OneDrive/Desktop/projects/vsex\" status)",
+      "Bash(git -C \"C:/Users/kanap/OneDrive/Desktop/projects/vsex\" ls-files --others --exclude-standard)",
+      "Bash(git -C \"C:/Users/kanap/OneDrive/Desktop/projects/vsex\" rm:*)",
+      "Bash(git -C \"C:/Users/kanap/OneDrive/Desktop/projects/vsex\" add src/orchestration/executionEngine.ts)",
+      "Bash(git -C:*)",
+      "Bash(npx @vscode/vsce publish:*)",
+      "Bash(node -p:*)",
+      "Bash(npm version:*)",
+      "Bash(echo:*)",
+      "Bash(node ./node_modules/.bin/vitest:*)",
+      "Bash(npm run test:*)",
+      "Bash(npm run vscode:prepublish:*)",
+      "Bash(vsce package:*)",
+      "Bash(vsce publish:*)",
+      "Bash(vsce show:*)",
+      "Bash(vsce ls-publishers:*)",
+      "Bash(vsce:*)",
+      "Bash(npx @vscode/vsce:*)",
+      "Bash(script -q -c \"npx @vscode/vsce publish --no-dependencies\" /dev/null)",
+      "Bash(for v in 0.2.1 0.2.2 0.2.3 0.3.0)",
+      "Bash(do)",
+      "Bash(done)"
     ]
   }
 }

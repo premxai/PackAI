@@ -1,6 +1,7 @@
 export { SettingsService, DEFAULT_SETTINGS } from "./settingsService";
 export type {
   PackAISettings,
+  AgentApiKeys,
   AgentPreferencesSettings,
   ApprovalSettings,
   UiSettings,

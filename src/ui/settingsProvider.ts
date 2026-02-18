@@ -84,6 +84,9 @@ export class SettingsProvider {
       case "reset-section":
         await this.resetSection(action.payload.section);
         break;
+      case "open-external":
+        await this.openExternal(action.payload.url);
+        break;
     }
   }
 
@@ -144,6 +147,7 @@ export class SettingsProvider {
       "agentPreferences.selectionStrategy",
       "agentPreferences.costOptimizationLevel",
       "agentPreferences.maxParallelSessions",
+      "agentPreferences.apiKeys",
       "approval.autoApproveTools",
       "approval.alwaysDenyTools",
       "approval.agentTrustLevels",
@@ -159,6 +163,16 @@ export class SettingsProvider {
       "advanced.maxRetries",
       "advanced.retryBaseDelayMs",
     ];
+  }
+
+  private async openExternal(url: string): Promise<void> {
+    try {
+      const uri = vscode.Uri.parse(url, true);
+      if (uri.scheme !== "https") return;
+      await vscode.env.openExternal(uri);
+    } catch {
+      // Ignore invalid URLs from webview input
+    }
   }
 
   private postMessage(msg: SettingsMessage): void {
@@ -237,6 +251,29 @@ export class SettingsProvider {
       <label for="maxParallelSessions">Max Parallel Sessions</label>
       <div class="setting-desc">Maximum agent sessions running simultaneously (1–10).</div>
       <input type="number" id="maxParallelSessions" min="1" max="10" value="3">
+    </div>
+    <div class="setting-row">
+      <label>Agent API Keys</label>
+      <div class="setting-desc">Configure optional API keys per agent.</div>
+      <div class="api-key-grid">
+        <span class="agent-label claude">Claude</span>
+        <div class="api-key-row">
+          <button class="btn btn-secondary get-api-key-btn" data-agent="claude" type="button">Get API Key</button>
+          <input type="password" id="apiKey-claude" placeholder="sk-ant-..." autocomplete="off">
+        </div>
+
+        <span class="agent-label copilot">Copilot</span>
+        <div class="api-key-row">
+          <button class="btn btn-secondary get-api-key-btn" data-agent="copilot" type="button">Get API Key</button>
+          <input type="password" id="apiKey-copilot" placeholder="github token..." autocomplete="off">
+        </div>
+
+        <span class="agent-label codex">Codex</span>
+        <div class="api-key-row">
+          <button class="btn btn-secondary get-api-key-btn" data-agent="codex" type="button">Get API Key</button>
+          <input type="password" id="apiKey-codex" placeholder="sk-proj-..." autocomplete="off">
+        </div>
+      </div>
     </div>
   </div>
 </div>

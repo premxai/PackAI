@@ -25,7 +25,8 @@ export type SettingsAction =
   | { readonly type: "request-state" }
   | { readonly type: "update-setting"; readonly payload: { readonly key: string; readonly value: unknown } }
   | { readonly type: "reset-defaults" }
-  | { readonly type: "reset-section"; readonly payload: { readonly section: string } };
+  | { readonly type: "reset-section"; readonly payload: { readonly section: string } }
+  | { readonly type: "open-external"; readonly payload: { readonly url: string } };
 
 // ---------------------------------------------------------------------------
 // State

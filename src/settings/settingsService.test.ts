@@ -95,6 +95,19 @@ describe("SettingsService", () => {
       expect(settings.advanced.customTemplatesDirectory).toBe("/my/templates");
     });
 
+    it("resolves per-agent API keys", () => {
+      const { settings } = service.resolve({
+        "agentPreferences.apiKeys": {
+          claude: "claude-key",
+          codex: "codex-key",
+        },
+      });
+
+      expect(settings.agentPreferences.apiKeys.claude).toBe("claude-key");
+      expect(settings.agentPreferences.apiKeys.copilot).toBe("");
+      expect(settings.agentPreferences.apiKeys.codex).toBe("codex-key");
+    });
+
     it("resolves valid tool type arrays", () => {
       const { settings, errors } = service.resolve({
         "approval.autoApproveTools": ["READ", "CREATE", "EDIT"],
@@ -216,6 +229,21 @@ describe("SettingsService", () => {
         agentPreferences: { ...s.agentPreferences, maxParallelSessions: 3.5 },
       });
       expect(errors.some((e) => e.field === "agentPreferences.maxParallelSessions")).toBe(true);
+    });
+
+    it("rejects non-string API keys", () => {
+      const s = makeSettings();
+      const errors = service.validate({
+        ...s,
+        agentPreferences: {
+          ...s.agentPreferences,
+          apiKeys: {
+            ...s.agentPreferences.apiKeys,
+            claude: 123 as never,
+          },
+        },
+      });
+      expect(errors.some((e) => e.field === "agentPreferences.apiKeys.claude")).toBe(true);
     });
 
     it("rejects overlapping auto-approve and deny lists", () => {

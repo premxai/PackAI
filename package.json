@@ -234,6 +234,29 @@
           "maximum": 10,
           "description": "Maximum number of parallel agent sessions allowed."
         },
+        "packai.agentPreferences.apiKeys": {
+          "type": "object",
+          "default": {
+            "claude": "",
+            "copilot": "",
+            "codex": ""
+          },
+          "properties": {
+            "claude": {
+              "type": "string",
+              "default": ""
+            },
+            "copilot": {
+              "type": "string",
+              "default": ""
+            },
+            "codex": {
+              "type": "string",
+              "default": ""
+            }
+          },
+          "markdownDescription": "API keys used by each agent (`claude`, `copilot`, `codex`). Keys are stored in VS Code settings storage."
+        },
         "packai.approval.autoApproveTools": {
           "type": "array",
           "default": [

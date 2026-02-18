@@ -4,6 +4,7 @@ import type {
   ApprovalSettings,
   UiSettings,
   AdvancedSettings,
+  AgentApiKeys,
   AgentSelectionStrategy,
   CostOptimizationLevel,
   AgentTrustLevel,
@@ -57,6 +58,11 @@ export const DEFAULT_SETTINGS: PackAISettings = {
     selectionStrategy: "intelligent",
     costOptimizationLevel: "balanced",
     maxParallelSessions: 3,
+    apiKeys: {
+      claude: "",
+      copilot: "",
+      codex: "",
+    },
   },
   approval: {
     autoApproveTools: ["READ", "WEB_SEARCH"],
@@ -158,6 +164,10 @@ export class SettingsService {
         d.maxParallelSessions,
         "agentPreferences.maxParallelSessions",
         errors
+      ),
+      apiKeys: this.resolveAgentApiKeys(
+        raw["agentPreferences.apiKeys"],
+        d.apiKeys
       ),
     };
   }
@@ -382,6 +392,21 @@ export class SettingsService {
     return result;
   }
 
+  private resolveAgentApiKeys(
+    value: unknown,
+    fallback: AgentApiKeys
+  ): AgentApiKeys {
+    if (value === undefined || value === null || typeof value !== "object") {
+      return { ...fallback };
+    }
+    const raw = value as Record<string, unknown>;
+    return {
+      claude: typeof raw["claude"] === "string" ? raw["claude"] : fallback.claude,
+      copilot: typeof raw["copilot"] === "string" ? raw["copilot"] : fallback.copilot,
+      codex: typeof raw["codex"] === "string" ? raw["codex"] : fallback.codex,
+    };
+  }
+
   // -----------------------------------------------------------------------
   // Validate helpers
   // -----------------------------------------------------------------------
@@ -411,6 +436,14 @@ export class SettingsService {
         field: "agentPreferences.maxParallelSessions",
         message: "Must be an integer between 1 and 10",
       });
+    }
+    for (const [agent, key] of Object.entries(s.apiKeys)) {
+      if (typeof key !== "string") {
+        errors.push({
+          field: `agentPreferences.apiKeys.${agent}`,
+          message: "Must be a string",
+        });
+      }
     }
   }
 

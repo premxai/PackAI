@@ -22,6 +22,12 @@ export type AgentSelectionStrategy =
 /** Cost-vs-quality tradeoff for model selection. */
 export type CostOptimizationLevel = "economy" | "balanced" | "performance";
 
+export interface AgentApiKeys {
+  readonly claude: string;
+  readonly copilot: string;
+  readonly codex: string;
+}
+
 export interface AgentPreferencesSettings {
   /** Which selection strategy the orchestrator uses. */
   readonly selectionStrategy: AgentSelectionStrategy;
@@ -29,6 +35,7 @@ export interface AgentPreferencesSettings {
   readonly costOptimizationLevel: CostOptimizationLevel;
   /** Maximum parallel agent sessions (1–10). */
   readonly maxParallelSessions: number;
+  readonly apiKeys: AgentApiKeys;
 }
 
 // ---------------------------------------------------------------------------
