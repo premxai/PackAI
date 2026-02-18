@@ -463,13 +463,7 @@ export class DashboardProvider implements vscode.WebviewViewProvider {
   }
 
   private async handleAgentChat(agent: AgentRole, message: string): Promise<void> {
-    const families: Record<AgentRole, string> = {
-      claude: "claude-3.5-sonnet",
-      copilot: "gpt-4o",
-      codex: "o3-mini",
-    };
-    const models = await vscode.lm.selectChatModels({ vendor: "copilot", family: families[agent] });
-    const model = models[0];
+    const model = await this.selectChatModelForAgent(agent);
     if (!model) {
       this.postDirectMessage({ type: "agent-chat-error", agent, error: "Model unavailable" });
       return;
@@ -515,6 +509,42 @@ export class DashboardProvider implements vscode.WebviewViewProvider {
     message: DashboardMessage
   ): void {
     void webview.postMessage(message);
+  }
+
+  private async selectChatModelForAgent(
+    agent: AgentRole
+  ): Promise<vscode.LanguageModelChat | undefined> {
+    const primaryFamilies: Record<AgentRole, readonly string[]> = {
+      claude: ["claude-3.7-sonnet", "claude-3.5-sonnet", "claude-3-opus"],
+      copilot: ["gpt-4o", "gpt-4.1", "gpt-4.1-mini"],
+      codex: ["o3-mini", "o3", "gpt-5", "gpt-4.1"],
+    };
+
+    for (const family of primaryFamilies[agent]) {
+      const models = await vscode.lm.selectChatModels({ vendor: "copilot", family });
+      if (models.length > 0) return models[0];
+    }
+
+    const vendorModels = await vscode.lm.selectChatModels({ vendor: "copilot" });
+    if (vendorModels.length === 0) return undefined;
+    const byAffinity = this.pickModelByAgentAffinity(agent, vendorModels);
+    return byAffinity ?? vendorModels[0];
+  }
+
+  private pickModelByAgentAffinity(
+    agent: AgentRole,
+    models: readonly vscode.LanguageModelChat[]
+  ): vscode.LanguageModelChat | undefined {
+    const affinities: Record<AgentRole, readonly string[]> = {
+      claude: ["claude"],
+      copilot: ["gpt", "4o", "4.1"],
+      codex: ["o3", "codex", "gpt-5"],
+    };
+    const keys = affinities[agent];
+    return models.find((m) => {
+      const haystack = `${m.id} ${m.family} ${m.name}`.toLowerCase();
+      return keys.some((k) => haystack.includes(k));
+    });
   }
 
   dispose(): void {

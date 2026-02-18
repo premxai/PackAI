@@ -6,6 +6,7 @@ import type {
   SessionConfig,
   AgentModelConfig,
   ILanguageModelProvider,
+  ILanguageModel,
   IEventEmitter,
   IEventEmitterFactory,
   ICancellationTokenSourceFactory,
@@ -36,6 +37,12 @@ const DEFAULT_AGENT_MODEL_CONFIG: AgentModelConfig = {
   claude: { vendor: "copilot", family: "claude-3.5-sonnet" },
   copilot: { vendor: "copilot", family: "gpt-4o" },
   codex: { vendor: "copilot", family: "o3-mini" },
+};
+
+const MODEL_FAMILY_FALLBACKS: Readonly<Record<AgentRole, readonly string[]>> = {
+  claude: ["claude-3.7-sonnet", "claude-3.5-sonnet", "claude-3-opus"],
+  copilot: ["gpt-4o", "gpt-4.1", "gpt-4.1-mini"],
+  codex: ["o3-mini", "o3", "gpt-5", "gpt-4.1"],
 };
 
 /**
@@ -103,10 +110,7 @@ export class SessionManager {
     task: ExecutionTask
   ): Promise<Session> {
     const modelMapping = this.agentModelConfig[agent];
-    const models = await this.lmProvider.selectModels({
-      vendor: modelMapping.vendor,
-      family: modelMapping.family,
-    });
+    const models = await this.selectModelsWithFallback(agent);
 
     if (models.length === 0) {
       throw new Error(
@@ -169,9 +173,10 @@ export class SessionManager {
     const results = await Promise.allSettled(
       (["claude", "copilot", "codex"] as AgentRole[]).map(async (agent) => {
         const mapping = this.agentModelConfig[agent];
+        // Availability is vendor-level: if any model is visible, the agent can run
+        // via createSession() fallback selection even when preferred family changes.
         const models = await this.lmProvider.selectModels({
           vendor: mapping.vendor,
-          family: mapping.family,
         });
         return { agent, available: models.length > 0 };
       })
@@ -244,5 +249,30 @@ export class SessionManager {
       throw new Error(`Session not found: ${sessionId}`);
     }
     return session;
+  }
+
+  private async selectModelsWithFallback(agent: AgentRole): Promise<readonly ILanguageModel[]> {
+    const mapping = this.agentModelConfig[agent];
+
+    if (mapping.family) {
+      const direct = await this.lmProvider.selectModels({
+        vendor: mapping.vendor,
+        family: mapping.family,
+      });
+      if (direct.length > 0) return direct;
+    }
+
+    const candidateFamilies = MODEL_FAMILY_FALLBACKS[agent].filter(
+      (f) => f !== mapping.family
+    );
+    for (const family of candidateFamilies) {
+      const models = await this.lmProvider.selectModels({
+        vendor: mapping.vendor,
+        family,
+      });
+      if (models.length > 0) return models;
+    }
+
+    return this.lmProvider.selectModels({ vendor: mapping.vendor });
   }
 }
