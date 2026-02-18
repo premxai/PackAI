@@ -157,7 +157,7 @@
         row.innerHTML =
           `<td>${esc(task.label)}</td>` +
           `<td>${esc(phase.label)}</td>` +
-          `<td><select class="agent-select" onchange="onAssignAgent('${esc(task.id)}', this.value)">` +
+          `<td><select class="agent-select" data-task-id="${esc(task.id)}">` +
           `<option value="claude"${task.agent === "claude" ? " selected" : ""}>Claude</option>` +
           `<option value="copilot"${task.agent === "copilot" ? " selected" : ""}>Copilot</option>` +
           `<option value="codex"${task.agent === "codex" ? " selected" : ""}>Codex</option>` +
@@ -269,12 +269,10 @@
         const icon = taskIcon(task.status);
         const actions = task.status === "running"
           ? `<div class="task-actions">
-              <button onclick="onPause('${esc(task.id)}')" title="Pause">&#10074;&#10074;</button>
-              <button onclick="onCancel('${esc(task.id)}')" title="Cancel">&#10005;</button>
+              <button data-action="pause" data-task-id="${esc(task.id)}" title="Pause">&#10074;&#10074;</button>
+              <button data-action="cancel" data-task-id="${esc(task.id)}" title="Cancel">&#10005;</button>
              </div>`
-          : task.status === "pending"
-            ? ""
-            : "";
+          : "";
         return `<div class="task-row">
           <span class="task-icon ${task.status}">${icon}</span>
           <span class="task-label" title="${esc(task.label)}">${esc(task.label)}</span>
@@ -285,7 +283,7 @@
 
       const isRunning = phase.status === "running";
       return `<div class="phase">
-        <div class="phase-header" onclick="togglePhase(this)">
+        <div class="phase-header" data-action="toggle-phase">
           <span class="phase-chevron ${isRunning ? "" : "collapsed"}">&#9660;</span>
           <span class="phase-label">${esc(phase.label)}</span>
           <span class="phase-status ${phase.status}">${phase.status}</span>
@@ -312,7 +310,7 @@
     container.innerHTML = state.conflicts.map((c) => {
       const btns = c.options.map((opt, i) => {
         const cls = i === 0 ? "conflict-btn primary" : "conflict-btn";
-        return `<button class="${cls}" onclick="onResolveConflict('${esc(c.id)}', '${esc(opt.strategy)}')" title="${esc(opt.description)}">${esc(opt.label)}</button>`;
+        return `<button class="${cls}" data-action="resolve-conflict" data-conflict-id="${esc(c.id)}" data-strategy="${esc(opt.strategy)}" title="${esc(opt.description)}">${esc(opt.label)}</button>`;
       }).join("");
       return `<div class="conflict-card severity-${c.severity}">
         <div class="conflict-type">${esc(c.type)}</div>
@@ -451,6 +449,57 @@
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#39;");
   }
+
+  // -------------------------------------------------------------------------
+  // Direct event listeners for static HTML buttons
+  // (belt-and-suspenders alongside onclick attributes, robust under strict CSP)
+  // -------------------------------------------------------------------------
+
+  document.querySelector(".start-execution-btn")?.addEventListener("click", function () {
+    vscode.postMessage({ type: "start-execution" });
+  });
+
+  for (const role of ["claude", "copilot", "codex"]) {
+    const sendBtn = document.querySelector("#agent-" + role + " .chat-input-row button");
+    if (sendBtn) sendBtn.addEventListener("click", function () { window.sendChatMessage(role); });
+    const input = document.getElementById("chat-input-" + role);
+    if (input) input.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") window.sendChatMessage(role);
+    });
+  }
+
+  // Event delegation for dynamically-rendered interactive elements
+  document.addEventListener("change", function (e) {
+    /** @type {HTMLSelectElement|null} */
+    const select = /** @type {Element} */ (e.target).closest(".agent-select");
+    if (select) {
+      const taskId = /** @type {HTMLElement} */ (select).dataset.taskId;
+      if (taskId) window.onAssignAgent(taskId, /** @type {HTMLSelectElement} */ (select).value);
+    }
+  });
+
+  document.addEventListener("click", function (e) {
+    const el = /** @type {Element} */ (e.target);
+
+    // Phase header toggle
+    const header = el.closest("[data-action='toggle-phase']");
+    if (header) {
+      window.togglePhase(header);
+      return;
+    }
+
+    // Buttons with data-action
+    const btn = el.closest("button[data-action]");
+    if (!btn) return;
+    const action = /** @type {HTMLElement} */ (btn).dataset.action;
+    const taskId = /** @type {HTMLElement} */ (btn).dataset.taskId;
+    const conflictId = /** @type {HTMLElement} */ (btn).dataset.conflictId;
+    const strategy = /** @type {HTMLElement} */ (btn).dataset.strategy;
+    if (action === "pause" && taskId) window.onPause(taskId);
+    else if (action === "cancel" && taskId) window.onCancel(taskId);
+    else if (action === "resolve-conflict" && conflictId && strategy)
+      window.onResolveConflict(conflictId, strategy);
+  });
 
   // -------------------------------------------------------------------------
   // Initial state request
